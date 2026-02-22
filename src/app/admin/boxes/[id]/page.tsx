@@ -460,17 +460,22 @@ export default function BoxEditorPage() {
           Back to Dashboard
         </Link>
 
-        {error && (
-          <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm mb-4">
-            {error}
-            <button onClick={() => setError(null)} className="ml-2 underline">
-              Dismiss
-            </button>
-          </div>
-        )}
-        {success && (
-          <div className="p-3 rounded-lg bg-green-50 text-green-700 text-sm mb-4">
-            {success}
+        {/* Toast messages — fixed at top so visible regardless of scroll */}
+        {(error || success) && (
+          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
+            {error && (
+              <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm shadow-lg border border-red-100">
+                {error}
+                <button onClick={() => setError(null)} className="ml-2 underline">
+                  Dismiss
+                </button>
+              </div>
+            )}
+            {success && (
+              <div className="p-3 rounded-lg bg-green-50 text-green-700 text-sm shadow-lg border border-green-100">
+                {success}
+              </div>
+            )}
           </div>
         )}
 
