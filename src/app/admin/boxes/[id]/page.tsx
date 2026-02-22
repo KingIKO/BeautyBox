@@ -297,7 +297,7 @@ export default function BoxEditorPage() {
     if (isDuplicate) {
       const targetLabel = EVENT_TYPES.find((e) => e.value === targetSection?.event_type)?.label || targetSection?.event_type;
       setSuccess(`Already in ${targetLabel}!`);
-      setTimeout(() => setSuccess(null), 2000);
+      setTimeout(() => setSuccess(null), 3000);
       return;
     }
     try {
@@ -315,7 +315,7 @@ export default function BoxEditorPage() {
       });
       await fetchBox();
       setSuccess("Product copied!");
-      setTimeout(() => setSuccess(null), 2000);
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to copy product");
     }
@@ -355,7 +355,7 @@ export default function BoxEditorPage() {
     if (newProducts.length === 0) {
       const targetLabel = EVENT_TYPES.find((e) => e.value === targetSection?.event_type)?.label || targetSection?.event_type;
       setSuccess(`All products already exist in ${targetLabel}!`);
-      setTimeout(() => setSuccess(null), 2000);
+      setTimeout(() => setSuccess(null), 3000);
       return;
     }
     try {
@@ -378,7 +378,7 @@ export default function BoxEditorPage() {
         ? `${newProducts.length} copied, ${skipped} already existed`
         : `${newProducts.length} product${newProducts.length !== 1 ? "s" : ""} copied!`;
       setSuccess(msg);
-      setTimeout(() => setSuccess(null), 2000);
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to copy products");
     }
@@ -462,9 +462,9 @@ export default function BoxEditorPage() {
 
         {/* Toast messages — fixed at top so visible regardless of scroll */}
         {(error || success) && (
-          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
+          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-4 animate-in fade-in slide-in-from-top-2 duration-200">
             {error && (
-              <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm shadow-lg border border-red-100">
+              <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm shadow-lg border border-red-200 text-center">
                 {error}
                 <button onClick={() => setError(null)} className="ml-2 underline">
                   Dismiss
@@ -472,7 +472,7 @@ export default function BoxEditorPage() {
               </div>
             )}
             {success && (
-              <div className="p-3 rounded-lg bg-green-50 text-green-700 text-sm shadow-lg border border-green-100">
+              <div className="p-3 rounded-lg bg-green-50 text-green-700 text-sm shadow-lg border border-green-200 font-medium text-center">
                 {success}
               </div>
             )}
