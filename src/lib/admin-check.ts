@@ -6,8 +6,11 @@ function sanitizeUUID(s: string): string {
 }
 
 export function isAdmin(user: AuthUser): boolean {
-  // Read at call time (not module scope) to avoid cold-start race conditions
-  const adminId = sanitizeUUID(process.env.ADMIN_USER_ID || "");
+  const rawEnv = process.env.ADMIN_USER_ID || "";
+  const adminId = sanitizeUUID(rawEnv);
+  const uid = sanitizeUUID(user.id);
+  const match = uid === adminId;
+  console.log("[isAdmin] rawEnv:", JSON.stringify(rawEnv), "rawEnvLen:", rawEnv.length, "adminId:", adminId, "uid:", uid, "match:", match);
   if (!adminId) return false;
-  return sanitizeUUID(user.id) === adminId;
+  return match;
 }
