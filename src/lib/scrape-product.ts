@@ -1,6 +1,7 @@
 import * as cheerio from "cheerio";
 import { PRODUCT_CATEGORIES } from "./constants";
 import type { ScrapedProduct } from "@/types";
+import { isLlmConfigured, cleanHtmlForProduct, extractProductWithLLM } from "./llm-product";
 
 /* ------------------------------------------------------------------ */
 /*  Domain → Store mapping                                            */
@@ -293,5 +294,62 @@ export async function scrapeProductUrl(url: string): Promise<ScrapedProduct> {
     category = detectCategory(textForCategory);
   }
 
+  // --- LLM enhancement (always runs if configured) ---
+  if (isLlmConfigured()) {
+    try {
+      const cleanedText = cleanHtmlForProduct(html);
+      const llm = await extractProductWithLLM(cleanedText, store, url);
+      if (llm) {
+        name = mergeField(name, llm.name, store);
+        brand = mergeField(brand, llm.brand, store);
+        price = price || llm.price; // cheerio price preferred, LLM fills gaps
+        if (
+          llm.category &&
+          PRODUCT_CATEGORIES.includes(llm.category as typeof PRODUCT_CATEGORIES[number])
+        ) {
+          category = llm.category; // LLM category preferred (sees full context)
+        }
+      }
+    } catch (err) {
+      // LLM failure is non-fatal — continue with cheerio results
+      console.warn("LLM enhancement failed:", err instanceof Error ? err.message : err);
+    }
+  }
+
   return { name, brand, price, image_url, store, category };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Merge helper — intelligently combine cheerio + LLM results         */
+/* ------------------------------------------------------------------ */
+
+function mergeField(
+  cheerioValue: string | null,
+  llmValue: string | null,
+  store: string
+): string | null {
+  // If cheerio got nothing, use LLM
+  if (!cheerioValue) return llmValue;
+
+  // If LLM got nothing, keep cheerio
+  if (!llmValue) return cheerioValue;
+
+  // If cheerio got garbage (just the store name, anti-bot page), use LLM
+  const garbage = [
+    store.toLowerCase(),
+    "robot check",
+    "access denied",
+    "just a moment",
+    "page not found",
+  ];
+  if (garbage.some((g) => cheerioValue.toLowerCase().trim() === g)) {
+    return llmValue;
+  }
+
+  // Both have values — prefer LLM (it understands context better)
+  if (llmValue.length > 2 && !garbage.some((g) => llmValue.toLowerCase().trim() === g)) {
+    return llmValue;
+  }
+
+  return cheerioValue;
 }
