@@ -63,7 +63,8 @@ function detectCategory(text: string): string | null {
 /*  Name cleanup — strip store suffixes                               */
 /* ------------------------------------------------------------------ */
 
-const STORE_SUFFIXES = [
+const STORE_PATTERNS = [
+  // Suffixes (store name at end)
   / \| Sephora$/i,
   / - Sephora$/i,
   / \| Ulta$/i,
@@ -79,14 +80,25 @@ const STORE_SUFFIXES = [
   / \| CVS$/i,
   / - CVS Pharmacy$/i,
   / \| Glossier$/i,
+  // Amazon prefixes ("Amazon.com : ...")
+  /^Amazon\.com\s*:\s*/i,
+  // Amazon category suffixes (" : Beauty & Personal Care", etc.)
+  /\s*:\s*Beauty & Personal Care$/i,
+  /\s*:\s*Health & Household$/i,
+  /\s*:\s*Luxury Beauty$/i,
+  /\s*:\s*Premium Beauty$/i,
 ];
 
 function cleanName(raw: string): string {
   let name = raw.trim();
-  for (const re of STORE_SUFFIXES) {
-    name = name.replace(re, "");
+  // Run multiple passes since a name may have both prefix and suffix
+  for (let pass = 0; pass < 2; pass++) {
+    for (const re of STORE_PATTERNS) {
+      name = name.replace(re, "");
+    }
+    name = name.trim();
   }
-  return name.trim();
+  return name;
 }
 
 /* ------------------------------------------------------------------ */
@@ -258,7 +270,21 @@ export async function scrapeProductUrl(url: string): Promise<ScrapedProduct> {
   // --- Priority 3: <title> tag (last resort for name) ---
   if (!name) {
     const titleTag = $("title").text();
-    if (titleTag) name = cleanName(titleTag);
+    if (titleTag) {
+      const cleaned = cleanName(titleTag);
+      // Skip generic/blocked page titles
+      const blockedTitles = [
+        "sephora", "ulta", "amazon", "target", "walmart",
+        "cvs", "glossier", "robot check", "access denied",
+        "just a moment", "page not found", "404",
+      ];
+      const isBlocked = blockedTitles.some(
+        (t) => cleaned.toLowerCase() === t || cleaned.toLowerCase().startsWith("robot")
+      );
+      if (!isBlocked && cleaned.length > 2) {
+        name = cleaned;
+      }
+    }
   }
 
   // --- Category detection from name + JSON-LD category ---
