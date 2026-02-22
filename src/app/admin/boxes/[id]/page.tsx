@@ -10,6 +10,7 @@ import {
   addProduct,
   updateProduct,
   deleteProduct,
+  scrapeProductUrl,
 } from "@/lib/api";
 import { EVENT_TYPES, PRODUCT_CATEGORIES } from "@/lib/constants";
 import { STORE_NAMES, getStoreConfig } from "@/lib/store-config";
@@ -34,6 +35,8 @@ import {
   Heart,
   X,
   Package,
+  Wand2,
+  Loader2,
 } from "lucide-react";
 
 const EVENT_ICONS: Record<string, React.ReactNode> = {
@@ -79,6 +82,39 @@ export default function BoxEditorPage() {
     shade: "",
     instructions: "",
   });
+  const [scraping, setScraping] = useState(false);
+  const [scrapeError, setScrapeError] = useState<string | null>(null);
+
+  const handleAutoFill = async () => {
+    const url = productForm.product_url.trim();
+    if (!url) return;
+    try {
+      new URL(url);
+    } catch {
+      setScrapeError("Please enter a valid URL");
+      return;
+    }
+    setScraping(true);
+    setScrapeError(null);
+    try {
+      const data = await scrapeProductUrl(url);
+      setProductForm((prev) => ({
+        ...prev,
+        name: prev.name || data.name || "",
+        brand: prev.brand || data.brand || "",
+        price: prev.price || data.price || "",
+        image_url: prev.image_url || data.image_url || "",
+        store: data.store || prev.store,
+        category: data.category || prev.category,
+      }));
+    } catch (err) {
+      setScrapeError(
+        err instanceof Error ? err.message : "Could not fetch product details"
+      );
+    } finally {
+      setScraping(false);
+    }
+  };
 
   const fetchBox = useCallback(async () => {
     if (authLoading || !user) return;
@@ -172,6 +208,8 @@ export default function BoxEditorPage() {
         instructions: "",
       });
     }
+    setScraping(false);
+    setScrapeError(null);
     setShowProductForm(true);
   };
 
@@ -610,6 +648,51 @@ export default function BoxEditorPage() {
             </div>
 
             <div className="p-5 space-y-4">
+              {/* Product URL + Auto-fill (top of form for URL-first workflow) */}
+              <div>
+                <label htmlFor="purl" className="label">
+                  Product URL
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    id="purl"
+                    type="url"
+                    value={productForm.product_url}
+                    onChange={(e) => {
+                      setProductForm({
+                        ...productForm,
+                        product_url: e.target.value,
+                      });
+                      setScrapeError(null);
+                    }}
+                    className="input-field flex-1"
+                    placeholder="https://www.sephora.com/product/..."
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAutoFill}
+                    disabled={scraping || !productForm.product_url.trim()}
+                    className="btn-secondary shrink-0 text-sm disabled:opacity-40"
+                    title="Auto-fill product details from URL"
+                  >
+                    {scraping ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="hidden sm:inline">Fetching...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="w-4 h-4" />
+                        <span className="hidden sm:inline">Auto-fill</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                {scrapeError && (
+                  <p className="text-sm text-red-500 mt-1">{scrapeError}</p>
+                )}
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="pname" className="label">
@@ -720,25 +803,6 @@ export default function BoxEditorPage() {
                     placeholder="e.g., #4 Light"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label htmlFor="purl" className="label">
-                  Product URL
-                </label>
-                <input
-                  id="purl"
-                  type="url"
-                  value={productForm.product_url}
-                  onChange={(e) =>
-                    setProductForm({
-                      ...productForm,
-                      product_url: e.target.value,
-                    })
-                  }
-                  className="input-field"
-                  placeholder="https://www.sephora.com/product/..."
-                />
               </div>
 
               <div>
