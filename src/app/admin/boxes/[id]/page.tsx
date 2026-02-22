@@ -37,6 +37,7 @@ import {
   Package,
   Wand2,
   Loader2,
+  CopyPlus,
 } from "lucide-react";
 
 const EVENT_ICONS: Record<string, React.ReactNode> = {
@@ -265,6 +266,44 @@ export default function BoxEditorPage() {
       await fetchBox();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete product");
+    }
+  };
+
+  // Copy product to another section
+  const [copyMenuProduct, setCopyMenuProduct] = useState<string | null>(null);
+  const copyMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!copyMenuProduct) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (copyMenuRef.current && !copyMenuRef.current.contains(e.target as Node)) {
+        setCopyMenuProduct(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [copyMenuProduct]);
+
+  const handleCopyToSection = async (product: Product, targetSectionId: string) => {
+    setCopyMenuProduct(null);
+    try {
+      await addProduct(boxId, {
+        section_id: targetSectionId,
+        name: product.name,
+        brand: product.brand,
+        category: product.category,
+        store: product.store,
+        price: product.price ?? undefined,
+        product_url: product.product_url || undefined,
+        image_url: product.image_url || undefined,
+        shade: product.shade || undefined,
+        instructions: product.instructions || undefined,
+      });
+      await fetchBox();
+      setSuccess("Product copied!");
+      setTimeout(() => setSuccess(null), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to copy product");
     }
   };
 
@@ -600,13 +639,52 @@ export default function BoxEditorPage() {
                                   </p>
                                 </div>
                                 <span
-                                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                  className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 hidden sm:inline ${
                                     getStoreConfig(product.store).bg
                                   } ${getStoreConfig(product.store).text}`}
                                 >
                                   {product.store}
                                 </span>
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0">
+                                  {/* Copy to another section */}
+                                  {(box?.sections?.length || 0) > 1 && (
+                                    <div className="relative" ref={copyMenuProduct === product.id ? copyMenuRef : undefined}>
+                                      <button
+                                        onClick={() => setCopyMenuProduct(
+                                          copyMenuProduct === product.id ? null : product.id
+                                        )}
+                                        className="p-1.5 rounded-lg hover:bg-white text-muted-foreground hover:text-foreground"
+                                        title="Copy to section"
+                                      >
+                                        <CopyPlus className="w-3.5 h-3.5" />
+                                      </button>
+                                      {copyMenuProduct === product.id && (
+                                        <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-border shadow-lg py-1 z-20 min-w-[160px]">
+                                          <p className="px-3 py-1 text-xs text-muted-foreground font-medium">
+                                            Copy to…
+                                          </p>
+                                          {box!.sections!
+                                            .filter((s) => s.id !== section.id)
+                                            .sort((a, b) => a.sort_order - b.sort_order)
+                                            .map((s) => {
+                                              const et = EVENT_TYPES.find(
+                                                (e) => e.value === s.event_type
+                                              );
+                                              return (
+                                                <button
+                                                  key={s.id}
+                                                  onClick={() => handleCopyToSection(product, s.id)}
+                                                  className="w-full text-left px-3 py-2 text-sm hover:bg-secondary flex items-center gap-2"
+                                                >
+                                                  {EVENT_ICONS[s.event_type]}
+                                                  {et?.label || s.event_type}
+                                                </button>
+                                              );
+                                            })}
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
                                   <button
                                     onClick={() =>
                                       openProductForm(section.id, product)

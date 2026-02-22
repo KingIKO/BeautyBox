@@ -215,14 +215,14 @@ export default function SharedBoxPage() {
                     {category}
                     <span className="w-8 h-px bg-border" />
                   </h2>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     {categoryProducts.map((product) => {
                       const store = getStoreConfig(product.store);
                       return (
                         <div key={product.id} className="card overflow-hidden">
                           {/* Product Image */}
                           {product.image_url ? (
-                            <div className="aspect-square bg-secondary">
+                            <div className="aspect-[4/3] bg-secondary">
                               <img
                                 src={product.image_url}
                                 alt={product.name}
@@ -230,49 +230,49 @@ export default function SharedBoxPage() {
                               />
                             </div>
                           ) : (
-                            <div className="aspect-square bg-gradient-to-br from-pink-100 to-rose-200 flex items-center justify-center">
-                              <ShoppingBag className="w-8 h-8 text-pink-300" />
+                            <div className="aspect-[4/3] bg-gradient-to-br from-pink-100 to-rose-200 flex items-center justify-center">
+                              <ShoppingBag className="w-6 h-6 sm:w-8 sm:h-8 text-pink-300" />
                             </div>
                           )}
 
-                          <div className="p-4">
+                          <div className="p-3 sm:p-4">
                             {/* Store Badge */}
                             <span
-                              className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium mb-2 ${store.bg} ${store.text}`}
+                              className={`inline-block text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-medium mb-1.5 sm:mb-2 ${store.bg} ${store.text}`}
                             >
                               {product.store}
                             </span>
 
                             {/* Brand */}
-                            <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                            <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide">
                               {product.brand}
                             </p>
 
                             {/* Name */}
-                            <h3 className="font-medium text-foreground mt-0.5 line-clamp-2">
+                            <h3 className="font-medium text-sm sm:text-base text-foreground mt-0.5 line-clamp-2">
                               {product.name}
                             </h3>
 
                             {/* Shade */}
                             {product.shade && (
-                              <p className="text-xs text-muted-foreground mt-1">
+                              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                                 Shade: {product.shade}
                               </p>
                             )}
 
                             {/* Price */}
                             {product.price != null && (
-                              <p className="text-sm font-semibold text-foreground mt-2">
+                              <p className="text-xs sm:text-sm font-semibold text-foreground mt-1.5 sm:mt-2">
                                 ${Number(product.price).toFixed(2)}
                               </p>
                             )}
 
                             {/* Instructions */}
                             {product.instructions && (
-                              <div className="mt-3 p-2.5 rounded-lg bg-amber-50 border border-amber-100">
+                              <div className="mt-2 sm:mt-3 p-2 sm:p-2.5 rounded-lg bg-amber-50 border border-amber-100">
                                 <div className="flex items-start gap-1.5">
-                                  <MessageCircle className="w-3.5 h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
-                                  <p className="text-xs text-amber-800">
+                                  <MessageCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
+                                  <p className="text-[10px] sm:text-xs text-amber-800 line-clamp-3">
                                     {product.instructions}
                                   </p>
                                 </div>
@@ -285,10 +285,10 @@ export default function SharedBoxPage() {
                                 href={product.product_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="btn-primary w-full mt-4 text-sm"
+                                className="btn-primary w-full mt-3 sm:mt-4 text-xs sm:text-sm py-2 sm:py-2.5"
                               >
-                                <ShoppingBag className="w-4 h-4" />
-                                Shop Now
+                                <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                Shop
                                 <ExternalLink className="w-3 h-3" />
                               </a>
                             )}
