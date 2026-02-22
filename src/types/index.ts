@@ -48,3 +48,13 @@ export type StoreName =
   | "Walmart"
   | "Glossier"
   | "Other";
+
+/** Metadata extracted from a product URL by the scraper */
+export interface ScrapedProduct {
+  name: string | null;
+  brand: string | null;
+  price: string | null;
+  image_url: string | null;
+  store: string;
+  category: string | null;
+}

@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import type { Box, BoxSection, Product } from "@/types";
+import type { Box, BoxSection, Product, ScrapedProduct } from "@/types";
 
 async function authHeaders(): Promise<Record<string, string>> {
   const {
@@ -111,6 +111,13 @@ export const uploadProductImage = async (file: File): Promise<string> => {
   const { url } = await res.json();
   return url;
 };
+
+// --- Admin: Scrape URL ---
+export const scrapeProductUrl = (url: string) =>
+  apiFetch<ScrapedProduct>("/api/admin/scrape-url", {
+    method: "POST",
+    body: JSON.stringify({ url }),
+  });
 
 // --- Admin: Reorder ---
 export const reorderProducts = (

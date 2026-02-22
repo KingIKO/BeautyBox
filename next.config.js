@@ -31,8 +31,12 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co" },
-      { protocol: "https", hostname: "www.sephora.com" },
-      { protocol: "https", hostname: "www.ulta.com" },
+      { protocol: "https", hostname: "**.sephora.com" },
+      { protocol: "https", hostname: "**.ulta.com" },
+      { protocol: "https", hostname: "**.media-amazon.com" },
+      { protocol: "https", hostname: "**.scene7.com" },
+      { protocol: "https", hostname: "**.walmartimages.com" },
+      { protocol: "https", hostname: "**.glossier.com" },
       { protocol: "https", hostname: "*.cloudfront.net" },
       { protocol: "https", hostname: "*.amazonaws.com" },
     ],

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, type FormEvent } from "react";
+import { Wand2, Loader2 } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ImageUploader from "./ImageUploader";
+import { scrapeProductUrl } from "@/lib/api";
 import { PRODUCT_CATEGORIES } from "@/lib/constants";
 import { STORE_NAMES } from "@/lib/store-config";
 import type { Product } from "@/types";
@@ -49,6 +51,8 @@ export default function ProductForm({
   const [form, setForm] = useState<ProductFormData>(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [scraping, setScraping] = useState(false);
+  const [scrapeError, setScrapeError] = useState<string | null>(null);
 
   const isEditing = !!product;
 
@@ -70,6 +74,7 @@ export default function ProductForm({
       setForm(emptyForm);
     }
     setError(null);
+    setScrapeError(null);
   }, [product, open]);
 
   const update = <K extends keyof ProductFormData>(
@@ -77,6 +82,50 @@ export default function ProductForm({
     value: ProductFormData[K]
   ) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  /* ---- Auto-fill from URL ---- */
+  const handleAutoFill = async () => {
+    const url = form.product_url.trim();
+    if (!url) return;
+
+    try {
+      new URL(url);
+    } catch {
+      setScrapeError("Please enter a valid URL.");
+      return;
+    }
+
+    setScrapeError(null);
+    setScraping(true);
+    try {
+      const data = await scrapeProductUrl(url);
+
+      setForm((prev) => ({
+        ...prev,
+        // Only fill fields that are currently empty / at default
+        name: prev.name || data.name || "",
+        brand: prev.brand || data.brand || "",
+        price: prev.price || data.price || "",
+        image_url: prev.image_url || data.image_url || "",
+        store:
+          prev.store === STORE_NAMES[0] && data.store
+            ? data.store
+            : prev.store,
+        category:
+          prev.category === PRODUCT_CATEGORIES[0] && data.category
+            ? data.category
+            : prev.category,
+      }));
+    } catch (err) {
+      setScrapeError(
+        err instanceof Error
+          ? err.message
+          : "Could not extract product details."
+      );
+    } finally {
+      setScraping(false);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -105,6 +154,48 @@ export default function ProductForm({
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Product URL + Auto-fill (moved to top for URL-first workflow) */}
+        <div>
+          <label htmlFor="pf-url" className="label">
+            Product URL
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="pf-url"
+              type="url"
+              value={form.product_url}
+              onChange={(e) => {
+                update("product_url", e.target.value);
+                setScrapeError(null);
+              }}
+              placeholder="https://www.sephora.com/..."
+              className="input-field flex-1"
+            />
+            <button
+              type="button"
+              onClick={handleAutoFill}
+              disabled={scraping || !form.product_url.trim()}
+              className="btn-secondary px-3 flex-shrink-0 flex items-center gap-1.5 whitespace-nowrap"
+              title="Auto-fill product details from URL"
+            >
+              {scraping ? (
+                <Loader2
+                  className="h-4 w-4 animate-spin"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Wand2 className="h-4 w-4" aria-hidden="true" />
+              )}
+              {scraping ? "Fetching..." : "Auto-fill"}
+            </button>
+          </div>
+          {scrapeError && (
+            <p className="text-xs text-destructive mt-1" role="alert">
+              {scrapeError}
+            </p>
+          )}
+        </div>
+
         {/* Name + Brand */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -203,21 +294,6 @@ export default function ProductForm({
               className="input-field"
             />
           </div>
-        </div>
-
-        {/* Product URL */}
-        <div>
-          <label htmlFor="pf-url" className="label">
-            Product URL
-          </label>
-          <input
-            id="pf-url"
-            type="url"
-            value={form.product_url}
-            onChange={(e) => update("product_url", e.target.value)}
-            placeholder="https://www.sephora.com/..."
-            className="input-field"
-          />
         </div>
 
         {/* Image */}
