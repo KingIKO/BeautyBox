@@ -286,6 +286,20 @@ export default function BoxEditorPage() {
 
   const handleCopyToSection = async (product: Product, targetSectionId: string) => {
     setCopyMenuProduct(null);
+    // Check for duplicates in target section
+    const targetSection = box?.sections?.find((s) => s.id === targetSectionId);
+    const targetProducts = targetSection?.products || [];
+    const isDuplicate = targetProducts.some(
+      (p) =>
+        p.name.toLowerCase() === product.name.toLowerCase() &&
+        p.brand.toLowerCase() === product.brand.toLowerCase()
+    );
+    if (isDuplicate) {
+      const targetLabel = EVENT_TYPES.find((e) => e.value === targetSection?.event_type)?.label || targetSection?.event_type;
+      setSuccess(`Already in ${targetLabel}!`);
+      setTimeout(() => setSuccess(null), 2000);
+      return;
+    }
     try {
       await addProduct(boxId, {
         section_id: targetSectionId,
@@ -324,10 +338,28 @@ export default function BoxEditorPage() {
 
   const handleCopyAllToSection = async (sourceSection: { id: string; products?: Product[] }, targetSectionId: string) => {
     setCopyAllMenuSection(null);
-    const products = sourceSection.products || [];
-    if (products.length === 0) return;
+    const sourceProducts = sourceSection.products || [];
+    if (sourceProducts.length === 0) return;
+    // Filter out products that already exist in the target section
+    const targetSection = box?.sections?.find((s) => s.id === targetSectionId);
+    const targetProducts = targetSection?.products || [];
+    const newProducts = sourceProducts.filter(
+      (p) =>
+        !targetProducts.some(
+          (tp) =>
+            tp.name.toLowerCase() === p.name.toLowerCase() &&
+            tp.brand.toLowerCase() === p.brand.toLowerCase()
+        )
+    );
+    const skipped = sourceProducts.length - newProducts.length;
+    if (newProducts.length === 0) {
+      const targetLabel = EVENT_TYPES.find((e) => e.value === targetSection?.event_type)?.label || targetSection?.event_type;
+      setSuccess(`All products already exist in ${targetLabel}!`);
+      setTimeout(() => setSuccess(null), 2000);
+      return;
+    }
     try {
-      for (const product of products) {
+      for (const product of newProducts) {
         await addProduct(boxId, {
           section_id: targetSectionId,
           name: product.name,
@@ -342,7 +374,10 @@ export default function BoxEditorPage() {
         });
       }
       await fetchBox();
-      setSuccess(`${products.length} product${products.length !== 1 ? "s" : ""} copied!`);
+      const msg = skipped > 0
+        ? `${newProducts.length} copied, ${skipped} already existed`
+        : `${newProducts.length} product${newProducts.length !== 1 ? "s" : ""} copied!`;
+      setSuccess(msg);
       setTimeout(() => setSuccess(null), 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to copy products");
