@@ -307,6 +307,48 @@ export default function BoxEditorPage() {
     }
   };
 
+  // Copy all products from one section to another
+  const [copyAllMenuSection, setCopyAllMenuSection] = useState<string | null>(null);
+  const copyAllMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!copyAllMenuSection) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (copyAllMenuRef.current && !copyAllMenuRef.current.contains(e.target as Node)) {
+        setCopyAllMenuSection(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [copyAllMenuSection]);
+
+  const handleCopyAllToSection = async (sourceSection: { id: string; products?: Product[] }, targetSectionId: string) => {
+    setCopyAllMenuSection(null);
+    const products = sourceSection.products || [];
+    if (products.length === 0) return;
+    try {
+      for (const product of products) {
+        await addProduct(boxId, {
+          section_id: targetSectionId,
+          name: product.name,
+          brand: product.brand,
+          category: product.category,
+          store: product.store,
+          price: product.price ?? undefined,
+          product_url: product.product_url || undefined,
+          image_url: product.image_url || undefined,
+          shade: product.shade || undefined,
+          instructions: product.instructions || undefined,
+        });
+      }
+      await fetchBox();
+      setSuccess(`${products.length} product${products.length !== 1 ? "s" : ""} copied!`);
+      setTimeout(() => setSuccess(null), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to copy products");
+    }
+  };
+
   const handleCopyLink = () => {
     const url = `${window.location.origin}/b/${slug}`;
     navigator.clipboard.writeText(url);
@@ -580,6 +622,49 @@ export default function BoxEditorPage() {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
+                      {/* Copy All to another section */}
+                      {products.length > 0 && (box?.sections?.length || 0) > 1 && (
+                        <div
+                          className="relative"
+                          ref={copyAllMenuSection === section.id ? copyAllMenuRef : undefined}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => setCopyAllMenuSection(
+                              copyAllMenuSection === section.id ? null : section.id
+                            )}
+                            className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                            title="Copy all products to…"
+                          >
+                            <CopyPlus className="w-4 h-4" />
+                          </button>
+                          {copyAllMenuSection === section.id && (
+                            <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-border shadow-lg py-1 z-20 min-w-[180px]">
+                              <p className="px-3 py-1 text-xs text-muted-foreground font-medium">
+                                Copy all to…
+                              </p>
+                              {box!.sections!
+                                .filter((s) => s.id !== section.id)
+                                .sort((a, b) => a.sort_order - b.sort_order)
+                                .map((s) => {
+                                  const et = EVENT_TYPES.find(
+                                    (e) => e.value === s.event_type
+                                  );
+                                  return (
+                                    <button
+                                      key={s.id}
+                                      onClick={() => handleCopyAllToSection(section, s.id)}
+                                      className="w-full text-left px-3 py-2 text-sm hover:bg-secondary flex items-center gap-2"
+                                    >
+                                      {EVENT_ICONS[s.event_type]}
+                                      {et?.label || s.event_type}
+                                    </button>
+                                  );
+                                })}
+                            </div>
+                          )}
+                        </div>
+                      )}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
