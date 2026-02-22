@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -84,6 +84,22 @@ export default function BoxEditorPage() {
   });
   const [scraping, setScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState<string | null>(null);
+
+  // Add Section dropdown
+  const [showSectionMenu, setShowSectionMenu] = useState(false);
+  const sectionMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close section menu on click outside
+  useEffect(() => {
+    if (!showSectionMenu) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (sectionMenuRef.current && !sectionMenuRef.current.contains(e.target as Node)) {
+        setShowSectionMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showSectionMenu]);
 
   const handleAutoFill = async () => {
     const url = productForm.product_url.trim();
@@ -455,24 +471,32 @@ export default function BoxEditorPage() {
               Sections & Products
             </h2>
             {availableEventTypes.length > 0 && (
-              <div className="relative group">
-                <button className="btn-secondary text-sm">
+              <div className="relative" ref={sectionMenuRef}>
+                <button
+                  onClick={() => setShowSectionMenu((v) => !v)}
+                  className="btn-secondary text-sm"
+                >
                   <Plus className="w-4 h-4" />
                   Add Section
                   <ChevronDown className="w-3 h-3" />
                 </button>
-                <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-border shadow-lg py-1 hidden group-hover:block z-10 min-w-[180px]">
-                  {availableEventTypes.map((et) => (
-                    <button
-                      key={et.value}
-                      onClick={() => handleAddSection(et.value)}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-secondary flex items-center gap-2"
-                    >
-                      {EVENT_ICONS[et.value]}
-                      {et.label}
-                    </button>
-                  ))}
-                </div>
+                {showSectionMenu && (
+                  <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-border shadow-lg py-1 z-10 min-w-[180px]">
+                    {availableEventTypes.map((et) => (
+                      <button
+                        key={et.value}
+                        onClick={() => {
+                          handleAddSection(et.value);
+                          setShowSectionMenu(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-secondary flex items-center gap-2"
+                      >
+                        {EVENT_ICONS[et.value]}
+                        {et.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
