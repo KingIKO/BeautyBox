@@ -1,9 +1,13 @@
 import { AuthUser } from "./auth-server";
 
-const ADMIN_USER_ID = (process.env.ADMIN_USER_ID || "").trim();
+/** Strip everything except hex chars and hyphens (kills invisible chars). */
+function sanitizeUUID(s: string): string {
+  return s.replace(/[^a-f0-9-]/gi, "").toLowerCase();
+}
 
 export function isAdmin(user: AuthUser): boolean {
-  console.log("[isAdmin] uid len:", user.id.length, "admin len:", ADMIN_USER_ID.length, "uid chars:", JSON.stringify(user.id), "admin chars:", JSON.stringify(ADMIN_USER_ID));
-  if (!ADMIN_USER_ID) return false;
-  return user.id === ADMIN_USER_ID;
+  // Read at call time (not module scope) to avoid cold-start race conditions
+  const adminId = sanitizeUUID(process.env.ADMIN_USER_ID || "");
+  if (!adminId) return false;
+  return sanitizeUUID(user.id) === adminId;
 }
