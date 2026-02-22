@@ -1,0 +1,30 @@
+export const EVENT_TYPES = [
+  { value: "day" as const, label: "Day Look", icon: "Sun", color: "bg-amber-100 text-amber-700" },
+  { value: "night" as const, label: "Night Look", icon: "Moon", color: "bg-indigo-100 text-indigo-700" },
+  { value: "party" as const, label: "Party Look", icon: "Sparkles", color: "bg-pink-100 text-pink-700" },
+  { value: "everyday" as const, label: "Everyday Look", icon: "Heart", color: "bg-rose-100 text-rose-700" },
+];
+
+export const PRODUCT_CATEGORIES = [
+  "Primer",
+  "Foundation",
+  "Concealer",
+  "Powder",
+  "Blush",
+  "Bronzer",
+  "Highlighter",
+  "Eyeshadow",
+  "Eyeliner",
+  "Mascara",
+  "Brows",
+  "Lipstick",
+  "Lip Gloss",
+  "Lip Liner",
+  "Setting Spray",
+  "Moisturizer",
+  "Sunscreen",
+  "Skincare",
+  "Tools",
+  "Fragrance",
+  "Other",
+] as const;
