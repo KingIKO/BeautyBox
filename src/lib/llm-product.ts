@@ -103,8 +103,15 @@ export async function extractProductWithLLM(
   const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) return null;
 
-  // Skip if text is too short to contain useful product info
-  if (cleanedText.length < 50) return null;
+  // If page text is very short (anti-bot page), supplement with the URL itself
+  // which often contains the product name in the slug
+  let textForLLM = cleanedText;
+  if (cleanedText.length < 100) {
+    textForLLM = `URL: ${url}\n\n${cleanedText}`;
+  }
+
+  // Skip only if truly empty
+  if (textForLLM.trim().length < 10) return null;
 
   try {
     const res = await fetch(DEEPSEEK_API_URL, {
@@ -117,7 +124,7 @@ export async function extractProductWithLLM(
         model: DEEPSEEK_MODEL,
         messages: [
           { role: "system", content: buildSystemPrompt(store, url) },
-          { role: "user", content: cleanedText },
+          { role: "user", content: textForLLM },
         ],
         temperature: 0.1,
         max_tokens: 200,
