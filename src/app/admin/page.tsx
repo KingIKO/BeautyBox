@@ -78,15 +78,15 @@ export default function AdminDashboardPage() {
           </div>
           <button onClick={signOut} className="btn-ghost text-sm">
             <LogOut className="w-4 h-4" />
-            Sign Out
+            <span className="hidden sm:inline">Sign Out</span>
           </button>
         </div>
       </nav>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
+      <div className="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+        <div className="flex items-start sm:items-center justify-between gap-3 mb-8">
+          <div className="min-w-0">
             <h1 className="font-display text-2xl font-bold text-foreground">
               Your Boxes
             </h1>
@@ -94,7 +94,7 @@ export default function AdminDashboardPage() {
               Create and manage beauty recommendation boxes
             </p>
           </div>
-          <Link href="/admin/boxes/new" className="btn-primary">
+          <Link href="/admin/boxes/new" className="btn-primary whitespace-nowrap flex-shrink-0">
             <Plus className="w-4 h-4" />
             New Box
           </Link>

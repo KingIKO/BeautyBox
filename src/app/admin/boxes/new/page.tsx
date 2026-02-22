@@ -50,12 +50,12 @@ export default function NewBoxPage() {
           </div>
           <button onClick={signOut} className="btn-ghost text-sm">
             <LogOut className="w-4 h-4" />
-            Sign Out
+            <span className="hidden sm:inline">Sign Out</span>
           </button>
         </div>
       </nav>
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
         <Link
           href="/admin"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6"

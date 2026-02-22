@@ -330,12 +330,12 @@ export default function BoxEditorPage() {
           </div>
           <button onClick={signOut} className="btn-ghost text-sm">
             <LogOut className="w-4 h-4" />
-            Sign Out
+            <span className="hidden sm:inline">Sign Out</span>
           </button>
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         <Link
           href="/admin"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6"
@@ -466,18 +466,18 @@ export default function BoxEditorPage() {
 
         {/* Sections */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between gap-3 mb-4">
             <h2 className="font-display text-xl font-semibold">
               Sections & Products
             </h2>
             {availableEventTypes.length > 0 && (
-              <div className="relative" ref={sectionMenuRef}>
+              <div className="relative flex-shrink-0" ref={sectionMenuRef}>
                 <button
                   onClick={() => setShowSectionMenu((v) => !v)}
-                  className="btn-secondary text-sm"
+                  className="btn-secondary text-sm whitespace-nowrap"
                 >
                   <Plus className="w-4 h-4" />
-                  Add Section
+                  <span className="hidden xs:inline">Add</span> Section
                   <ChevronDown className="w-3 h-3" />
                 </button>
                 {showSectionMenu && (
