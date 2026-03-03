@@ -14,7 +14,7 @@ export default function BoxHero({
   coverImage,
 }: BoxHeroProps) {
   return (
-    <section className="relative w-full min-h-[240px] sm:min-h-[320px] flex items-end overflow-hidden rounded-xl">
+    <section className="relative w-full min-h-[260px] sm:min-h-[360px] flex items-end overflow-hidden rounded-3xl">
       {/* Background */}
       {coverImage ? (
         <Image
@@ -27,24 +27,24 @@ export default function BoxHero({
         />
       ) : (
         <div
-          className="absolute inset-0 bg-gradient-to-br from-pink-200 via-rose-300 to-amber-200"
+          className="absolute inset-0 animate-gradient bg-gradient-to-br from-pink-100 via-rose-100 to-amber-50"
           aria-hidden="true"
         />
       )}
 
-      {/* Gradient overlay for text readability */}
+      {/* Gradient overlay */}
       <div
-        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent"
         aria-hidden="true"
       />
 
       {/* Text content */}
-      <div className="relative z-10 w-full px-6 py-8 sm:px-8 sm:py-10">
-        <h1 className="text-2xl sm:text-4xl font-display font-bold text-white leading-tight mb-2">
+      <div className="relative z-10 w-full px-7 py-10 sm:px-10 sm:py-12">
+        <h1 className="text-2xl sm:text-4xl font-display font-bold text-white leading-tight mb-3">
           {title}
         </h1>
         {description && (
-          <p className="text-sm sm:text-base text-white/85 max-w-xl leading-relaxed">
+          <p className="text-sm sm:text-base text-white/80 max-w-xl leading-relaxed">
             {description}
           </p>
         )}

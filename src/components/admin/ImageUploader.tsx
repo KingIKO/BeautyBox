@@ -19,13 +19,11 @@ export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       setError("Please select an image file.");
       return;
     }
 
-    // Validate size (10MB max)
     if (file.size > 10 * 1024 * 1024) {
       setError("Image must be under 10MB.");
       return;
@@ -40,7 +38,6 @@ export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
       setError("Upload failed. Please try again.");
     } finally {
       setUploading(false);
-      // Reset file input so the same file can be re-selected
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -65,7 +62,7 @@ export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="btn-secondary px-3 flex-shrink-0"
+          className="btn-secondary px-3.5 flex-shrink-0"
         >
           <Upload className="h-4 w-4" aria-hidden="true" />
           {uploading ? "..." : "Upload"}
@@ -92,7 +89,7 @@ export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
       {/* Preview */}
       {value && (
         <div className="relative inline-block">
-          <div className="relative h-20 w-20 rounded-lg overflow-hidden border border-border bg-muted">
+          <div className="relative h-20 w-20 rounded-xl overflow-hidden border border-border/40 bg-muted">
             <Image
               src={value}
               alt="Product image preview"
@@ -104,7 +101,7 @@ export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
           <button
             type="button"
             onClick={() => onChange("")}
-            className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-sm"
+            className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-sm transition-transform hover:scale-110"
             aria-label="Remove image"
           >
             <X className="h-3 w-3" />

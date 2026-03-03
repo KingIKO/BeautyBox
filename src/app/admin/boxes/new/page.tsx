@@ -34,17 +34,19 @@ export default function NewBoxPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Admin Nav */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+      {/* Glass Nav */}
+      <nav className="glass-nav">
+        <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/admin" className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
+            <Link href="/admin" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
+              </div>
               <span className="font-display text-lg font-bold text-foreground">
                 BeautyBox
               </span>
             </Link>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+            <span className="text-[11px] px-2.5 py-1 rounded-full bg-primary/8 text-primary font-semibold uppercase tracking-wider">
               Admin
             </span>
           </div>
@@ -55,29 +57,29 @@ export default function NewBoxPage() {
         </div>
       </nav>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
+      <div className="max-w-2xl mx-auto px-5 py-8">
         <Link
           href="/admin"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
         </Link>
 
-        <h1 className="font-display text-2xl font-bold text-foreground mb-6">
+        <h1 className="font-display text-3xl font-bold text-foreground mb-8">
           Create New Box
         </h1>
 
-        <form onSubmit={handleSubmit} className="card p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="card p-7 space-y-6">
           {error && (
-            <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm">
+            <div className="p-3 rounded-xl bg-destructive/5 border border-destructive/10 text-destructive text-sm">
               {error}
             </div>
           )}
 
           <div>
             <label htmlFor="title" className="label">
-              Box Title *
+              Box Title <span className="text-destructive">*</span>
             </label>
             <input
               id="title"
@@ -89,7 +91,7 @@ export default function NewBoxPage() {
               required
               autoFocus
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-2">
               This will be visible to anyone with the link
             </p>
           </div>
@@ -102,12 +104,12 @@ export default function NewBoxPage() {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="input-field min-h-[100px] resize-y"
+              className="input-field min-h-[120px] resize-y"
               placeholder="A curated collection of products for the perfect summer look..."
             />
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-3 border-t border-border/40">
             <button type="submit" disabled={loading || !title.trim()} className="btn-primary">
               {loading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />

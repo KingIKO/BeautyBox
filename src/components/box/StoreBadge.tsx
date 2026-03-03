@@ -11,7 +11,7 @@ export default function StoreBadge({ store }: StoreBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.text}`}
+      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${config.bg} ${config.text}`}
     >
       {config.name}
     </span>

@@ -8,18 +8,17 @@ export default function AdminNav() {
   const { signOut } = useAuth();
 
   return (
-    <nav className="sticky top-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border">
-      <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+    <nav className="glass-nav">
+      <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between">
         {/* Left: Logo + Admin badge */}
-        <Link href="/admin" className="flex items-center gap-2 group">
-          <Sparkles
-            className="h-5 w-5 text-accent transition-transform group-hover:rotate-12"
-            aria-hidden="true"
-          />
+        <Link href="/admin" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+            <Sparkles className="w-4 h-4 text-white" aria-hidden="true" />
+          </div>
           <span className="text-lg font-display font-bold text-foreground tracking-tight">
             BeautyBox
           </span>
-          <span className="ml-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+          <span className="ml-0.5 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/8 text-primary">
             Admin
           </span>
         </Link>

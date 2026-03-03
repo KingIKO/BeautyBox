@@ -17,21 +17,17 @@ export default function CategoryGroup({
   return (
     <section aria-labelledby={`cat-${category}`}>
       {/* Category Header */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="section-divider mb-5">
         <h3
           id={`cat-${category}`}
-          className="text-base font-semibold font-display text-foreground whitespace-nowrap"
+          className="text-base font-semibold font-display text-foreground whitespace-nowrap px-3"
         >
           {category}
         </h3>
-        <div className="h-px flex-1 bg-border" aria-hidden="true" />
-        <span className="text-xs text-muted-foreground">
-          {products.length} {products.length === 1 ? "product" : "products"}
-        </span>
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

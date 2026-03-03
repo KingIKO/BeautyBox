@@ -12,9 +12,9 @@ interface SlugInputProps {
 function sanitizeSlug(raw: string): string {
   return raw
     .toLowerCase()
-    .replace(/[^a-z0-9-]/g, "-") // Replace non-alphanumeric with hyphens
-    .replace(/-+/g, "-") // Collapse multiple hyphens
-    .replace(/^-|-$/g, ""); // Trim leading/trailing hyphens
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 export default function SlugInput({ value, onChange, baseUrl }: SlugInputProps) {
@@ -38,7 +38,7 @@ export default function SlugInput({ value, onChange, baseUrl }: SlugInputProps) 
   };
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <label htmlFor="slug-input" className="label">
         Slug
       </label>
@@ -55,7 +55,7 @@ export default function SlugInput({ value, onChange, baseUrl }: SlugInputProps) 
           type="button"
           onClick={handleCopy}
           disabled={!value}
-          className="btn-secondary px-3 flex-shrink-0"
+          className="btn-secondary px-3.5 flex-shrink-0"
           aria-label="Copy share link"
         >
           <Copy className="h-4 w-4" aria-hidden="true" />

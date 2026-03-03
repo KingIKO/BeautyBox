@@ -29,27 +29,35 @@ export default function AdminLoginPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
+        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center animate-pulse-soft">
+          <Sparkles className="w-5 h-5 text-white" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="w-6 h-6 text-primary" />
-            <span className="font-display text-2xl font-bold text-foreground">
-              BeautyBox
-            </span>
+    <div className="min-h-screen flex items-center justify-center bg-background px-5 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-20 -left-32 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 -right-32 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
+
+      <div className="relative w-full max-w-sm">
+        {/* Logo */}
+        <div className="text-center mb-10">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto mb-4 shadow-glow">
+            <Sparkles className="w-7 h-7 text-white" />
           </div>
-          <p className="text-sm text-muted-foreground">Admin Login</p>
+          <h1 className="font-display text-2xl font-bold text-foreground">
+            BeautyBox
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">Admin Login</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="card p-6 space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="card p-7 space-y-5">
           {error && (
-            <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm">
+            <div className="p-3 rounded-xl bg-destructive/5 border border-destructive/10 text-destructive text-sm">
               {error}
             </div>
           )}
@@ -89,7 +97,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full"
+            className="btn-primary w-full py-3"
           >
             {loading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />

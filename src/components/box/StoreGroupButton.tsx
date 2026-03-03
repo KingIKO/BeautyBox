@@ -22,15 +22,16 @@ export default function StoreGroupButton({
     <button
       onClick={onViewProducts}
       className={`
-        flex items-center gap-3 w-full px-4 py-3 rounded-lg border
+        flex items-center gap-3 w-full px-5 py-3.5 rounded-2xl border
         ${config.border} ${config.bg} ${config.text}
-        hover:opacity-90 transition-opacity text-left
+        hover:opacity-90 transition-all duration-200 text-left
+        hover:-translate-y-0.5
       `}
     >
       <ShoppingBag className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold">{config.name}</p>
-        <p className="text-xs opacity-80">
+        <p className="text-xs opacity-75">
           View all {count} {count === 1 ? "product" : "products"} at{" "}
           {config.name}
         </p>

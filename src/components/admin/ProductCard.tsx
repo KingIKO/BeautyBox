@@ -21,9 +21,9 @@ export default function AdminProductCard({
   onMoveDown,
 }: AdminProductCardProps) {
   return (
-    <article className="card p-3 flex items-center gap-3">
+    <article className="flex items-center gap-3 p-3 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors group">
       {/* Thumbnail */}
-      <div className="relative h-14 w-14 flex-shrink-0 rounded-lg overflow-hidden bg-muted border border-border">
+      <div className="relative h-14 w-14 flex-shrink-0 rounded-xl overflow-hidden bg-muted border border-border/40">
         {product.image_url ? (
           <Image
             src={product.image_url}
@@ -34,7 +34,7 @@ export default function AdminProductCard({
           />
         ) : (
           <div
-            className="absolute inset-0 bg-gradient-to-br from-pink-100 to-amber-50"
+            className="absolute inset-0 bg-gradient-to-br from-pink-50 to-amber-50"
             aria-hidden="true"
           />
         )}
@@ -49,7 +49,7 @@ export default function AdminProductCard({
           <span className="text-xs text-muted-foreground">{product.brand}</span>
           <StoreBadge store={product.store} />
           {product.price != null && (
-            <span className="text-xs font-medium text-foreground">
+            <span className="text-xs font-semibold text-foreground">
               ${product.price.toFixed(2)}
             </span>
           )}
@@ -60,28 +60,28 @@ export default function AdminProductCard({
       <div className="flex items-center gap-0.5 flex-shrink-0">
         <button
           onClick={() => onMoveUp(product)}
-          className="btn-ghost p-1.5"
+          className="p-1.5 rounded-lg hover:bg-white/80 text-muted-foreground hover:text-foreground transition-colors"
           aria-label={`Move ${product.name} up`}
         >
           <ChevronUp className="h-4 w-4" />
         </button>
         <button
           onClick={() => onMoveDown(product)}
-          className="btn-ghost p-1.5"
+          className="p-1.5 rounded-lg hover:bg-white/80 text-muted-foreground hover:text-foreground transition-colors"
           aria-label={`Move ${product.name} down`}
         >
           <ChevronDown className="h-4 w-4" />
         </button>
         <button
           onClick={() => onEdit(product)}
-          className="btn-ghost p-1.5"
+          className="p-1.5 rounded-lg hover:bg-white/80 text-muted-foreground hover:text-foreground transition-colors"
           aria-label={`Edit ${product.name}`}
         >
           <Edit className="h-4 w-4" />
         </button>
         <button
           onClick={() => onDelete(product)}
-          className="btn-ghost p-1.5 text-destructive hover:bg-destructive/10"
+          className="p-1.5 rounded-lg hover:bg-destructive/5 text-muted-foreground hover:text-destructive transition-colors"
           aria-label={`Delete ${product.name}`}
         >
           <Trash2 className="h-4 w-4" />

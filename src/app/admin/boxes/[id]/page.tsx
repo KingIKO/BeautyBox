@@ -286,7 +286,6 @@ export default function BoxEditorPage() {
 
   const handleCopyToSection = async (product: Product, targetSectionId: string) => {
     setCopyMenuProduct(null);
-    // Check for duplicates in target section
     const targetSection = box?.sections?.find((s) => s.id === targetSectionId);
     const targetProducts = targetSection?.products || [];
     const isDuplicate = targetProducts.some(
@@ -340,7 +339,6 @@ export default function BoxEditorPage() {
     setCopyAllMenuSection(null);
     const sourceProducts = sourceSection.products || [];
     if (sourceProducts.length === 0) return;
-    // Filter out products that already exist in the target section
     const targetSection = box?.sections?.find((s) => s.id === targetSectionId);
     const targetProducts = targetSection?.products || [];
     const newProducts = sourceProducts.filter(
@@ -410,7 +408,9 @@ export default function BoxEditorPage() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
+        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center animate-pulse-soft">
+          <Sparkles className="w-5 h-5 text-white" />
+        </div>
       </div>
     );
   }
@@ -419,7 +419,10 @@ export default function BoxEditorPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <p className="text-muted-foreground mb-4">Box not found</p>
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+            <Package className="w-8 h-8 text-muted-foreground/40" />
+          </div>
+          <p className="text-muted-foreground mb-5">Box not found</p>
           <Link href="/admin" className="btn-primary">
             Back to Dashboard
           </Link>
@@ -430,17 +433,19 @@ export default function BoxEditorPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Admin Nav */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+      {/* Glass Nav */}
+      <nav className="glass-nav">
+        <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/admin" className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
+            <Link href="/admin" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
+              </div>
               <span className="font-display text-lg font-bold text-foreground">
                 BeautyBox
               </span>
             </Link>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+            <span className="text-[11px] px-2.5 py-1 rounded-full bg-primary/8 text-primary font-semibold uppercase tracking-wider">
               Admin
             </span>
           </div>
@@ -451,28 +456,28 @@ export default function BoxEditorPage() {
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+      <div className="max-w-4xl mx-auto px-5 py-8">
         <Link
           href="/admin"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
         </Link>
 
-        {/* Toast messages — fixed at top so visible regardless of scroll */}
+        {/* Toast messages */}
         {(error || success) && (
-          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-5 animate-slide-up">
             {error && (
-              <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm shadow-lg border border-red-200 text-center">
+              <div className="p-3.5 rounded-2xl bg-destructive/5 border border-destructive/10 text-destructive text-sm shadow-soft text-center backdrop-blur-sm">
                 {error}
-                <button onClick={() => setError(null)} className="ml-2 underline">
+                <button onClick={() => setError(null)} className="ml-2 underline font-medium">
                   Dismiss
                 </button>
               </div>
             )}
             {success && (
-              <div className="p-3 rounded-lg bg-green-50 text-green-700 text-sm shadow-lg border border-green-200 font-medium text-center">
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm shadow-soft font-medium text-center backdrop-blur-sm">
                 {success}
               </div>
             )}
@@ -480,11 +485,11 @@ export default function BoxEditorPage() {
         )}
 
         {/* Box Metadata */}
-        <div className="card p-6 mb-6">
-          <h2 className="font-display text-xl font-semibold mb-4">
+        <div className="card p-7 mb-8">
+          <h2 className="font-display text-xl font-semibold mb-5">
             Box Details
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
               <label htmlFor="title" className="label">
                 Title
@@ -513,15 +518,15 @@ export default function BoxEditorPage() {
                       .replace(/-+/g, "-")
                   )
                 }
-                className="input-field"
+                className="input-field font-mono text-sm"
               />
-              <div className="flex items-center gap-2 mt-1">
-                <p className="text-xs text-muted-foreground">
-                  Link: {typeof window !== "undefined" ? window.location.origin : ""}/b/{slug}
+              <div className="flex items-center gap-2 mt-2">
+                <p className="text-xs text-muted-foreground font-mono truncate">
+                  {typeof window !== "undefined" ? window.location.origin : ""}/b/{slug}
                 </p>
                 <button
                   onClick={handleCopyLink}
-                  className="text-xs text-primary hover:underline flex items-center gap-1"
+                  className="text-xs text-primary hover:underline flex items-center gap-1 font-medium flex-shrink-0"
                 >
                   <Copy className="w-3 h-3" />
                   {copied ? "Copied!" : "Copy"}
@@ -536,16 +541,16 @@ export default function BoxEditorPage() {
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="input-field min-h-[80px] resize-y"
+                className="input-field min-h-[100px] resize-y"
               />
             </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsPublished(!isPublished)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                   isPublished
-                    ? "bg-green-100 text-green-700"
-                    : "bg-gray-100 text-gray-600"
+                    ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                    : "bg-muted text-muted-foreground border border-border/60"
                 }`}
               >
                 {isPublished ? (
@@ -556,7 +561,7 @@ export default function BoxEditorPage() {
                 {isPublished ? "Published" : "Draft"}
               </button>
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-3 border-t border-border/40">
               <button
                 onClick={handleSaveMetadata}
                 disabled={saving}
@@ -586,8 +591,8 @@ export default function BoxEditorPage() {
         </div>
 
         {/* Sections */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between gap-3 mb-4">
+        <div className="mb-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
             <h2 className="font-display text-xl font-semibold">
               Sections & Products
             </h2>
@@ -602,7 +607,7 @@ export default function BoxEditorPage() {
                   <ChevronDown className="w-3 h-3" />
                 </button>
                 {showSectionMenu && (
-                  <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-border shadow-lg py-1 z-10 min-w-[180px]">
+                  <div className="absolute right-0 top-full mt-2 bg-card rounded-2xl border border-border/60 shadow-soft py-1.5 z-10 min-w-[200px] overflow-hidden">
                     {availableEventTypes.map((et) => (
                       <button
                         key={et.value}
@@ -610,7 +615,7 @@ export default function BoxEditorPage() {
                           handleAddSection(et.value);
                           setShowSectionMenu(false);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-secondary flex items-center gap-2"
+                        className="w-full text-left px-4 py-2.5 text-sm hover:bg-secondary/60 flex items-center gap-2.5 transition-colors"
                       >
                         {EVENT_ICONS[et.value]}
                         {et.label}
@@ -623,8 +628,10 @@ export default function BoxEditorPage() {
           </div>
 
           {(!box.sections || box.sections.length === 0) && (
-            <div className="card p-8 text-center">
-              <Package className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+            <div className="card p-10 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+                <Package className="w-8 h-8 text-muted-foreground/40" />
+              </div>
               <p className="text-muted-foreground text-sm">
                 No sections yet. Add a Day, Night, or Party section to get
                 started.
@@ -632,234 +639,243 @@ export default function BoxEditorPage() {
             </div>
           )}
 
-          {box.sections
-            ?.sort((a, b) => a.sort_order - b.sort_order)
-            .map((section) => {
-              const etConfig = EVENT_TYPES.find(
-                (e) => e.value === section.event_type
-              );
-              const isCollapsed = collapsedSections.has(section.id);
-              const products = section.products || [];
+          <div className="space-y-4">
+            {box.sections
+              ?.sort((a, b) => a.sort_order - b.sort_order)
+              .map((section) => {
+                const etConfig = EVENT_TYPES.find(
+                  (e) => e.value === section.event_type
+                );
+                const isCollapsed = collapsedSections.has(section.id);
+                const products = section.products || [];
 
-              return (
-                <div key={section.id} className="card mb-4">
-                  {/* Section Header */}
-                  <div
-                    className="flex items-center justify-between p-4 cursor-pointer"
-                    onClick={() => toggleSection(section.id)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`px-2.5 py-1 rounded-lg text-sm font-medium flex items-center gap-1.5 ${
-                          etConfig?.color || "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {EVENT_ICONS[section.event_type]}
-                        {etConfig?.label || section.event_type}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {products.length} product{products.length !== 1 ? "s" : ""}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {/* Copy All to another section */}
-                      {products.length > 0 && (box?.sections?.length || 0) > 1 && (
-                        <div
-                          className="relative"
-                          ref={copyAllMenuSection === section.id ? copyAllMenuRef : undefined}
-                          onClick={(e) => e.stopPropagation()}
+                return (
+                  <div key={section.id} className="card overflow-hidden">
+                    {/* Section Header */}
+                    <div
+                      className="flex items-center justify-between p-4 sm:p-5 cursor-pointer hover:bg-secondary/30 transition-colors"
+                      onClick={() => toggleSection(section.id)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`px-3 py-1.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 ${
+                            etConfig?.color || "bg-muted text-muted-foreground"
+                          }`}
                         >
-                          <button
-                            onClick={() => setCopyAllMenuSection(
-                              copyAllMenuSection === section.id ? null : section.id
-                            )}
-                            className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-                            title="Copy all products to…"
+                          {EVENT_ICONS[section.event_type]}
+                          {etConfig?.label || section.event_type}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          {products.length} product{products.length !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {/* Copy All */}
+                        {products.length > 0 && (box?.sections?.length || 0) > 1 && (
+                          <div
+                            className="relative"
+                            ref={copyAllMenuSection === section.id ? copyAllMenuRef : undefined}
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            <CopyPlus className="w-4 h-4" />
-                          </button>
-                          {copyAllMenuSection === section.id && (
-                            <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-border shadow-lg py-1 z-20 min-w-[180px]">
-                              <p className="px-3 py-1 text-xs text-muted-foreground font-medium">
-                                Copy all to…
-                              </p>
-                              {box!.sections!
-                                .filter((s) => s.id !== section.id)
-                                .sort((a, b) => a.sort_order - b.sort_order)
-                                .map((s) => {
-                                  const et = EVENT_TYPES.find(
-                                    (e) => e.value === s.event_type
-                                  );
-                                  return (
-                                    <button
-                                      key={s.id}
-                                      onClick={() => handleCopyAllToSection(section, s.id)}
-                                      className="w-full text-left px-3 py-2 text-sm hover:bg-secondary flex items-center gap-2"
-                                    >
-                                      {EVENT_ICONS[s.event_type]}
-                                      {et?.label || s.event_type}
-                                    </button>
-                                  );
-                                })}
-                            </div>
+                            <button
+                              onClick={() => setCopyAllMenuSection(
+                                copyAllMenuSection === section.id ? null : section.id
+                              )}
+                              className="p-2 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                              title="Copy all products to..."
+                            >
+                              <CopyPlus className="w-4 h-4" />
+                            </button>
+                            {copyAllMenuSection === section.id && (
+                              <div className="absolute right-0 top-full mt-2 bg-card rounded-2xl border border-border/60 shadow-soft py-1.5 z-20 min-w-[200px] overflow-hidden">
+                                <p className="px-4 py-1.5 text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">
+                                  Copy all to...
+                                </p>
+                                {box!.sections!
+                                  .filter((s) => s.id !== section.id)
+                                  .sort((a, b) => a.sort_order - b.sort_order)
+                                  .map((s) => {
+                                    const et = EVENT_TYPES.find(
+                                      (e) => e.value === s.event_type
+                                    );
+                                    return (
+                                      <button
+                                        key={s.id}
+                                        onClick={() => handleCopyAllToSection(section, s.id)}
+                                        className="w-full text-left px-4 py-2.5 text-sm hover:bg-secondary/60 flex items-center gap-2.5 transition-colors"
+                                      >
+                                        {EVENT_ICONS[s.event_type]}
+                                        {et?.label || s.event_type}
+                                      </button>
+                                    );
+                                  })}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (
+                              confirm(
+                                `Delete the ${etConfig?.label || section.event_type} section and all its products?`
+                              )
+                            ) {
+                              handleDeleteSection(section.id);
+                            }
+                          }}
+                          className="p-2 rounded-xl hover:bg-destructive/5 text-muted-foreground hover:text-destructive transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <div className="p-2 text-muted-foreground">
+                          {isCollapsed ? (
+                            <ChevronDown className="w-4 h-4" />
+                          ) : (
+                            <ChevronUp className="w-4 h-4" />
                           )}
                         </div>
-                      )}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (
-                            confirm(
-                              `Delete the ${etConfig?.label || section.event_type} section and all its products?`
-                            )
-                          ) {
-                            handleDeleteSection(section.id);
-                          }
-                        }}
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-destructive transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      {isCollapsed ? (
-                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                      )}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Section Content */}
-                  {!isCollapsed && (
-                    <div className="px-4 pb-4 border-t border-border pt-4">
-                      {products.length === 0 ? (
-                        <p className="text-sm text-muted-foreground text-center py-4">
-                          No products in this section yet.
-                        </p>
-                      ) : (
-                        <div className="space-y-2 mb-4">
-                          {products
-                            .sort((a, b) => a.sort_order - b.sort_order)
-                            .map((product) => (
-                              <div
-                                key={product.id}
-                                className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50 group"
-                              >
-                                {product.image_url ? (
-                                  <img
-                                    src={product.image_url}
-                                    alt={product.name}
-                                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                                  />
-                                ) : (
-                                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-200 to-rose-300 flex-shrink-0" />
-                                )}
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium text-foreground truncate">
-                                    {product.name}
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {product.brand}
-                                    {product.price != null &&
-                                      ` • $${Number(product.price).toFixed(2)}`}
-                                  </p>
-                                </div>
-                                <span
-                                  className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 hidden sm:inline ${
-                                    getStoreConfig(product.store).bg
-                                  } ${getStoreConfig(product.store).text}`}
+                    {/* Section Content */}
+                    {!isCollapsed && (
+                      <div className="px-4 sm:px-5 pb-4 sm:pb-5 border-t border-border/40 pt-4">
+                        {products.length === 0 ? (
+                          <p className="text-sm text-muted-foreground text-center py-6">
+                            No products in this section yet.
+                          </p>
+                        ) : (
+                          <div className="space-y-2 mb-4">
+                            {products
+                              .sort((a, b) => a.sort_order - b.sort_order)
+                              .map((product) => (
+                                <div
+                                  key={product.id}
+                                  className="flex items-center gap-3 p-3 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors group"
                                 >
-                                  {product.store}
-                                </span>
-                                <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0">
-                                  {/* Copy to another section */}
-                                  {(box?.sections?.length || 0) > 1 && (
-                                    <div className="relative" ref={copyMenuProduct === product.id ? copyMenuRef : undefined}>
-                                      <button
-                                        onClick={() => setCopyMenuProduct(
-                                          copyMenuProduct === product.id ? null : product.id
-                                        )}
-                                        className="p-1.5 rounded-lg hover:bg-white text-muted-foreground hover:text-foreground"
-                                        title="Copy to section"
-                                      >
-                                        <CopyPlus className="w-3.5 h-3.5" />
-                                      </button>
-                                      {copyMenuProduct === product.id && (
-                                        <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-border shadow-lg py-1 z-20 min-w-[160px]">
-                                          <p className="px-3 py-1 text-xs text-muted-foreground font-medium">
-                                            Copy to…
-                                          </p>
-                                          {box!.sections!
-                                            .filter((s) => s.id !== section.id)
-                                            .sort((a, b) => a.sort_order - b.sort_order)
-                                            .map((s) => {
-                                              const et = EVENT_TYPES.find(
-                                                (e) => e.value === s.event_type
-                                              );
-                                              return (
-                                                <button
-                                                  key={s.id}
-                                                  onClick={() => handleCopyToSection(product, s.id)}
-                                                  className="w-full text-left px-3 py-2 text-sm hover:bg-secondary flex items-center gap-2"
-                                                >
-                                                  {EVENT_ICONS[s.event_type]}
-                                                  {et?.label || s.event_type}
-                                                </button>
-                                              );
-                                            })}
-                                        </div>
-                                      )}
-                                    </div>
+                                  {product.image_url ? (
+                                    <img
+                                      src={product.image_url}
+                                      alt={product.name}
+                                      className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-border/40"
+                                    />
+                                  ) : (
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 flex-shrink-0" />
                                   )}
-                                  <button
-                                    onClick={() =>
-                                      openProductForm(section.id, product)
-                                    }
-                                    className="p-1.5 rounded-lg hover:bg-white text-muted-foreground hover:text-foreground"
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-semibold text-foreground truncate">
+                                      {product.name}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                      {product.brand}
+                                      {product.price != null &&
+                                        ` · $${Number(product.price).toFixed(2)}`}
+                                    </p>
+                                  </div>
+                                  <span
+                                    className={`text-[10px] px-2 py-0.5 rounded-full font-semibold flex-shrink-0 hidden sm:inline ${
+                                      getStoreConfig(product.store).bg
+                                    } ${getStoreConfig(product.store).text}`}
                                   >
-                                    <Edit className="w-3.5 h-3.5" />
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleDeleteProduct(product.id)
-                                    }
-                                    className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-destructive"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
+                                    {product.store}
+                                  </span>
+                                  <div className="flex items-center gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0">
+                                    {/* Copy to another section */}
+                                    {(box?.sections?.length || 0) > 1 && (
+                                      <div className="relative" ref={copyMenuProduct === product.id ? copyMenuRef : undefined}>
+                                        <button
+                                          onClick={() => setCopyMenuProduct(
+                                            copyMenuProduct === product.id ? null : product.id
+                                          )}
+                                          className="p-1.5 rounded-lg hover:bg-white/80 text-muted-foreground hover:text-foreground transition-colors"
+                                          title="Copy to section"
+                                        >
+                                          <CopyPlus className="w-3.5 h-3.5" />
+                                        </button>
+                                        {copyMenuProduct === product.id && (
+                                          <div className="absolute right-0 top-full mt-2 bg-card rounded-2xl border border-border/60 shadow-soft py-1.5 z-20 min-w-[180px] overflow-hidden">
+                                            <p className="px-3 py-1.5 text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">
+                                              Copy to...
+                                            </p>
+                                            {box!.sections!
+                                              .filter((s) => s.id !== section.id)
+                                              .sort((a, b) => a.sort_order - b.sort_order)
+                                              .map((s) => {
+                                                const et = EVENT_TYPES.find(
+                                                  (e) => e.value === s.event_type
+                                                );
+                                                return (
+                                                  <button
+                                                    key={s.id}
+                                                    onClick={() => handleCopyToSection(product, s.id)}
+                                                    className="w-full text-left px-3 py-2 text-sm hover:bg-secondary/60 flex items-center gap-2 transition-colors"
+                                                  >
+                                                    {EVENT_ICONS[s.event_type]}
+                                                    {et?.label || s.event_type}
+                                                  </button>
+                                                );
+                                              })}
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                    <button
+                                      onClick={() =>
+                                        openProductForm(section.id, product)
+                                      }
+                                      className="p-1.5 rounded-lg hover:bg-white/80 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                      <Edit className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        handleDeleteProduct(product.id)
+                                      }
+                                      className="p-1.5 rounded-lg hover:bg-destructive/5 text-muted-foreground hover:text-destructive transition-colors"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
-                        </div>
-                      )}
-                      <button
-                        onClick={() => openProductForm(section.id)}
-                        className="btn-secondary text-sm w-full"
-                      >
-                        <Plus className="w-4 h-4" />
-                        Add Product
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                              ))}
+                          </div>
+                        )}
+                        <button
+                          onClick={() => openProductForm(section.id)}
+                          className="btn-secondary text-sm w-full"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add Product
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
         </div>
       </div>
 
       {/* Product Form Modal */}
       {showProductForm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in"
           onClick={() => setShowProductForm(false)}
         >
           <div
-            className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            className="bg-card rounded-t-3xl sm:rounded-2xl shadow-xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto animate-slide-up-sheet sm:animate-slide-up border border-border/40"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-labelledby="product-form-title"
           >
-            <div className="flex items-center justify-between p-5 border-b border-border">
+            {/* Handle bar for mobile */}
+            <div className="flex justify-center pt-3 pb-0 sm:hidden">
+              <div className="w-10 h-1 rounded-full bg-border" />
+            </div>
+
+            <div className="flex items-center justify-between p-5 sm:p-6">
               <h3
                 id="product-form-title"
                 className="font-display text-lg font-semibold"
@@ -868,14 +884,14 @@ export default function BoxEditorPage() {
               </h3>
               <button
                 onClick={() => setShowProductForm(false)}
-                className="p-1.5 rounded-lg hover:bg-secondary"
+                className="p-2 rounded-xl hover:bg-secondary transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-5 space-y-4">
-              {/* Product URL + Auto-fill (top of form for URL-first workflow) */}
+            <div className="px-5 sm:px-6 pb-2 space-y-4">
+              {/* Product URL + Auto-fill */}
               <div>
                 <label htmlFor="purl" className="label">
                   Product URL
@@ -916,14 +932,14 @@ export default function BoxEditorPage() {
                   </button>
                 </div>
                 {scrapeError && (
-                  <p className="text-sm text-red-500 mt-1">{scrapeError}</p>
+                  <p className="text-xs text-destructive mt-1.5">{scrapeError}</p>
                 )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="pname" className="label">
-                    Product Name *
+                    Product Name <span className="text-destructive">*</span>
                   </label>
                   <input
                     id="pname"
@@ -938,7 +954,7 @@ export default function BoxEditorPage() {
                 </div>
                 <div>
                   <label htmlFor="pbrand" className="label">
-                    Brand *
+                    Brand <span className="text-destructive">*</span>
                   </label>
                   <input
                     id="pbrand"
@@ -1053,7 +1069,7 @@ export default function BoxEditorPage() {
                   <img
                     src={productForm.image_url}
                     alt="Preview"
-                    className="mt-2 w-20 h-20 rounded-lg object-cover"
+                    className="mt-2 w-20 h-20 rounded-xl object-cover border border-border/40"
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = "none";
                     }}
@@ -1080,7 +1096,7 @@ export default function BoxEditorPage() {
               </div>
             </div>
 
-            <div className="flex gap-3 p-5 border-t border-border">
+            <div className="flex gap-3 p-5 sm:p-6 border-t border-border/40 mt-2">
               <button
                 onClick={handleSaveProduct}
                 disabled={

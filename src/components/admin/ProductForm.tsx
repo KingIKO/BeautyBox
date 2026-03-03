@@ -56,7 +56,6 @@ export default function ProductForm({
 
   const isEditing = !!product;
 
-  // Populate form when editing
   useEffect(() => {
     if (product) {
       setForm({
@@ -84,7 +83,6 @@ export default function ProductForm({
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  /* ---- Auto-fill from URL ---- */
   const handleAutoFill = async () => {
     const url = form.product_url.trim();
     if (!url) return;
@@ -103,7 +101,6 @@ export default function ProductForm({
 
       setForm((prev) => ({
         ...prev,
-        // Only fill fields that are currently empty / at default
         name: prev.name || data.name || "",
         brand: prev.brand || data.brand || "",
         price: prev.price || data.price || "",
@@ -154,7 +151,7 @@ export default function ProductForm({
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Product URL + Auto-fill (moved to top for URL-first workflow) */}
+        {/* Product URL + Auto-fill */}
         <div>
           <label htmlFor="pf-url" className="label">
             Product URL
@@ -175,7 +172,7 @@ export default function ProductForm({
               type="button"
               onClick={handleAutoFill}
               disabled={scraping || !form.product_url.trim()}
-              className="btn-secondary px-3 flex-shrink-0 flex items-center gap-1.5 whitespace-nowrap"
+              className="btn-secondary px-3.5 flex-shrink-0 flex items-center gap-1.5 whitespace-nowrap"
               title="Auto-fill product details from URL"
             >
               {scraping ? (
@@ -190,7 +187,7 @@ export default function ProductForm({
             </button>
           </div>
           {scrapeError && (
-            <p className="text-xs text-destructive mt-1" role="alert">
+            <p className="text-xs text-destructive mt-1.5" role="alert">
               {scrapeError}
             </p>
           )}
@@ -325,7 +322,7 @@ export default function ProductForm({
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 pt-2 border-t border-border">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-border/40">
           <button type="button" onClick={onClose} className="btn-secondary">
             Cancel
           </button>

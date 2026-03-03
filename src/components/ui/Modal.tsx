@@ -42,7 +42,6 @@ export default function Modal({
   useEffect(() => {
     if (!open) return;
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    // Focus the dialog container
     dialogRef.current?.focus();
     return () => {
       previouslyFocused?.focus();
@@ -63,7 +62,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
@@ -79,16 +78,21 @@ export default function Modal({
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className={`relative w-full ${maxWidthClasses[maxWidth]} bg-card rounded-xl border border-border shadow-xl animate-slide-up outline-none`}
+        className={`relative w-full ${maxWidthClasses[maxWidth]} bg-card rounded-t-3xl sm:rounded-2xl border border-border/40 shadow-xl animate-slide-up-sheet sm:animate-slide-up outline-none`}
       >
+        {/* Mobile handle */}
+        <div className="flex justify-center pt-3 pb-0 sm:hidden">
+          <div className="w-10 h-1 rounded-full bg-border" />
+        </div>
+
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+        <div className="flex items-center justify-between px-6 py-4 sm:py-5">
           <h2 id={titleId} className="text-lg font-semibold font-display">
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="btn-ghost p-1.5 rounded-lg"
+            className="p-2 rounded-xl hover:bg-secondary transition-colors"
             aria-label="Close dialog"
           >
             <X className="h-5 w-5" />
@@ -96,7 +100,7 @@ export default function Modal({
         </div>
 
         {/* Body */}
-        <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">{children}</div>
+        <div className="px-6 pb-6 max-h-[70vh] overflow-y-auto">{children}</div>
       </div>
     </div>
   );
