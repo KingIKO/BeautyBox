@@ -16,8 +16,20 @@ import {
   Edit,
   Copy,
   ExternalLink,
+  LayoutGrid,
+  CheckCircle2,
+  FileText,
 } from "lucide-react";
 import { AdvancedButton } from "@/components/ui/gradient-button";
+import { AnimatedGradient } from "@/components/ui/animated-gradient-with-svg";
+import { StatsCard } from "@/components/admin/StatsCard";
+
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -55,6 +67,9 @@ export default function AdminDashboardPage() {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const publishedCount = boxes.filter((b) => b.is_published).length;
+  const draftCount = boxes.length - publishedCount;
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -90,14 +105,57 @@ export default function AdminDashboardPage() {
         </div>
       </nav>
 
+      {/* Welcome Hero */}
+      <section className="relative overflow-hidden">
+        <AnimatedGradient
+          colors={["#fda4af", "#fbcfe8", "#fde68a"]}
+          speed={0.05}
+          blur="medium"
+        />
+        <div className="relative max-w-6xl mx-auto px-5 py-10 md:py-14">
+          <div className="text-center mb-8">
+            <h1 className="animate-slide-up font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+              {getGreeting()} ✨
+            </h1>
+            {user?.email && (
+              <p className="animate-slide-up stagger-1 text-sm text-muted-foreground" style={{ animationFillMode: "backwards" }}>
+                {user.email}
+              </p>
+            )}
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto animate-slide-up stagger-2" style={{ animationFillMode: "backwards" }}>
+            <StatsCard
+              label="Total Boxes"
+              value={boxes.length}
+              icon={LayoutGrid}
+              accentColor="#f43f5e"
+            />
+            <StatsCard
+              label="Published"
+              value={publishedCount}
+              icon={CheckCircle2}
+              accentColor="#10b981"
+            />
+            <StatsCard
+              label="Drafts"
+              value={draftCount}
+              icon={FileText}
+              accentColor="#f59e0b"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Content */}
       <div className="max-w-6xl mx-auto px-5 py-8">
         {/* Header */}
         <div className="flex items-start sm:items-center justify-between gap-4 mb-10">
           <div>
-            <h1 className="font-display text-3xl font-bold text-foreground">
+            <h2 className="font-display text-2xl font-bold text-foreground">
               Your Boxes
-            </h1>
+            </h2>
             <p className="text-sm text-muted-foreground mt-1.5">
               Create and manage beauty recommendation boxes
             </p>
@@ -141,90 +199,125 @@ export default function AdminDashboardPage() {
             {boxes.map((box) => (
               <div
                 key={box.id}
-                className="card p-6 flex flex-col hover:-translate-y-0.5 transition-all duration-300"
+                className="card overflow-hidden flex flex-col hover:-translate-y-0.5 transition-all duration-300"
               >
-                {/* Header */}
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <h3 className="font-display text-lg font-semibold text-foreground line-clamp-1">
-                    {box.title}
-                  </h3>
-                  <span
-                    className={`text-[11px] px-2.5 py-1 rounded-full font-semibold flex-shrink-0 ${
-                      box.is_published
-                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                        : "bg-muted text-muted-foreground border border-border/60"
-                    }`}
-                  >
-                    {box.is_published ? (
-                      <Eye className="w-3 h-3 inline mr-1 -mt-px" />
-                    ) : (
-                      <EyeOff className="w-3 h-3 inline mr-1 -mt-px" />
-                    )}
-                    {box.is_published ? "Published" : "Draft"}
-                  </span>
-                </div>
+                {/* Gradient accent strip */}
+                <div
+                  className={`h-1 w-full ${
+                    box.is_published
+                      ? "bg-gradient-to-r from-rose-400 to-amber-400"
+                      : "bg-gradient-to-r from-muted to-border"
+                  }`}
+                />
 
-                {box.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
-                    {box.description}
-                  </p>
+                {/* Cover image thumbnail */}
+                {box.cover_image_url && (
+                  <div className="h-32 overflow-hidden">
+                    <img
+                      src={box.cover_image_url}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 )}
 
-                <p className="text-xs text-muted-foreground/60 font-mono mb-5">
-                  /b/{box.slug}
-                </p>
+                <div className="p-6 flex flex-col flex-1">
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <h3 className="font-display text-lg font-semibold text-foreground line-clamp-1">
+                      {box.title}
+                    </h3>
+                    <span
+                      className={`text-[11px] px-2.5 py-1 rounded-full font-semibold flex-shrink-0 ${
+                        box.is_published
+                          ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                          : "bg-muted text-muted-foreground border border-border/60"
+                      }`}
+                    >
+                      {box.is_published ? (
+                        <Eye className="w-3 h-3 inline mr-1 -mt-px" />
+                      ) : (
+                        <EyeOff className="w-3 h-3 inline mr-1 -mt-px" />
+                      )}
+                      {box.is_published ? "Published" : "Draft"}
+                    </span>
+                  </div>
 
-                {/* Spacer */}
-                <div className="flex-1" />
+                  {box.description && (
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
+                      {box.description}
+                    </p>
+                  )}
 
-                {/* Actions */}
-                <div className="flex items-center gap-2 flex-wrap pt-4 border-t border-border/40">
-                  <Link
-                    href={`/admin/boxes/${box.id}`}
-                    className="btn-primary text-xs px-3.5 py-2"
-                  >
-                    <Edit className="w-3.5 h-3.5" />
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => handleCopyLink(box.slug)}
-                    className="btn-secondary text-xs px-3.5 py-2"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    {copied === box.slug ? "Copied!" : "Copy Link"}
-                  </button>
-                  {box.is_published && (
+                  {/* Slug + product count */}
+                  <div className="flex items-center gap-3 mb-5">
+                    <p className="text-xs text-muted-foreground/60 font-mono">
+                      /b/{box.slug}
+                    </p>
+                    {box.sections && box.sections.length > 0 && (
+                      <span className="text-xs text-muted-foreground/60 flex items-center gap-1">
+                        <Package className="w-3 h-3" />
+                        {box.sections.reduce(
+                          (sum, s) => sum + (s.products?.length || 0),
+                          0
+                        )}{" "}
+                        products
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Spacer */}
+                  <div className="flex-1" />
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 flex-wrap pt-4 border-t border-border/40">
                     <Link
-                      href={`/b/${box.slug}`}
-                      target="_blank"
-                      className="btn-ghost text-xs px-2.5 py-2"
+                      href={`/admin/boxes/${box.id}`}
+                      className="btn-primary text-xs px-3.5 py-2"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <Edit className="w-3.5 h-3.5" />
+                      Edit
                     </Link>
-                  )}
-                  {deleteConfirm === box.id ? (
-                    <div className="flex items-center gap-1.5 ml-auto">
-                      <button
-                        onClick={() => handleDelete(box.id)}
-                        className="btn-danger text-xs px-3 py-1.5"
-                      >
-                        Confirm
-                      </button>
-                      <button
-                        onClick={() => setDeleteConfirm(null)}
-                        className="btn-ghost text-xs px-3 py-1.5"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  ) : (
                     <button
-                      onClick={() => setDeleteConfirm(box.id)}
-                      className="btn-ghost text-xs px-2.5 py-2 text-destructive hover:bg-destructive/5 ml-auto"
+                      onClick={() => handleCopyLink(box.slug)}
+                      className="btn-secondary text-xs px-3.5 py-2"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Copy className="w-3.5 h-3.5" />
+                      {copied === box.slug ? "Copied!" : "Copy Link"}
                     </button>
-                  )}
+                    {box.is_published && (
+                      <Link
+                        href={`/b/${box.slug}`}
+                        target="_blank"
+                        className="btn-ghost text-xs px-2.5 py-2"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </Link>
+                    )}
+                    {deleteConfirm === box.id ? (
+                      <div className="flex items-center gap-1.5 ml-auto">
+                        <button
+                          onClick={() => handleDelete(box.id)}
+                          className="btn-danger text-xs px-3 py-1.5"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm(null)}
+                          className="btn-ghost text-xs px-3 py-1.5"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setDeleteConfirm(box.id)}
+                        className="btn-ghost text-xs px-2.5 py-2 text-destructive hover:bg-destructive/5 ml-auto"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

@@ -104,7 +104,7 @@ function ProductCarousel({ products }: { products: Product[] }) {
               key={product.id}
               className="w-[260px] sm:w-[280px] flex-shrink-0"
             >
-              <div className="card overflow-hidden h-full flex flex-col group hover:-translate-y-1 transition-all duration-300">
+              <div className="card product-card-glow overflow-hidden h-full flex flex-col group hover:-translate-y-1 transition-all duration-300">
                 {/* Product Image */}
                 {product.image_url ? (
                   <div className="aspect-square bg-muted overflow-hidden">
@@ -381,8 +381,12 @@ export default function SharedBoxPage() {
         ) : (
           <div className="space-y-10">
             {Array.from(categories.entries()).map(
-              ([category, categoryProducts]) => (
-                <section key={category}>
+              ([category, categoryProducts], index) => (
+                <section
+                  key={category}
+                  className="animate-fade-in-up"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
                   {/* Category Header */}
                   <div className="section-divider mb-5">
                     <h2 className="font-display text-lg font-semibold text-foreground whitespace-nowrap px-3">
