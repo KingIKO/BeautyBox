@@ -334,7 +334,7 @@ export default function SharedBoxPage() {
       {/* Event Tabs - Pill Style */}
       {sortedSections.length > 1 && (
         <div className="sticky top-14 z-40 bg-background/80 backdrop-blur-lg border-b border-border/40">
-          <div className="max-w-5xl mx-auto px-5 py-2.5">
+          <div className="max-w-5xl mx-auto px-5 py-2.5 flex justify-center overflow-x-auto scrollbar-hide">
             <div className="pill-tabs inline-flex">
               {sortedSections.map((section) => {
                 const etConfig = EVENT_TYPES.find(
@@ -362,7 +362,7 @@ export default function SharedBoxPage() {
       )}
 
       {/* Products */}
-      <div className="max-w-5xl mx-auto px-5 py-8">
+      <div key={activeTab} className="max-w-5xl mx-auto px-5 py-8">
         {activeSection?.description && (
           <p className="text-muted-foreground text-sm mb-8 text-center max-w-lg mx-auto leading-relaxed">
             {activeSection.description}
