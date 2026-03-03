@@ -17,7 +17,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { AnimatedGradient } from "@/components/ui/animated-gradient-with-svg";
+
 
 const EVENT_ICONS: Record<string, React.ReactNode> = {
   day: <Sun className="w-4 h-4" />,
@@ -292,9 +292,8 @@ export default function SharedBoxPage() {
             </div>
           </>
         ) : (
-          <div className="relative overflow-hidden">
-            <AnimatedGradient colors={["#fb7185", "#f9a8d4", "#fcd34d"]} speed={0.05} blur="medium" />
-            <div className="relative max-w-5xl mx-auto px-5 py-16 md:py-24 text-center">
+          <div className="bg-gradient-to-br from-rose-50 via-pink-50 to-amber-50">
+            <div className="max-w-5xl mx-auto px-5 py-16 md:py-24 text-center">
               <h1 className="animate-slide-up font-display text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
                 {box.title}
               </h1>
