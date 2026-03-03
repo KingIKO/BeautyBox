@@ -251,29 +251,6 @@ export default function SharedBoxPage() {
   const sortedSections = [...(box.sections || [])].sort(
     (a, b) => a.sort_order - b.sort_order
   );
-  const activeSection = sortedSections.find(
-    (s) => s.event_type === activeTab
-  );
-  const products = activeSection?.products || [];
-
-  // Group products by category
-  const categories = new Map<string, Product[]>();
-  [...products]
-    .sort((a, b) => a.sort_order - b.sort_order)
-    .forEach((p) => {
-      const cat = p.category || "Other";
-      if (!categories.has(cat)) categories.set(cat, []);
-      categories.get(cat)!.push(p);
-    });
-
-  // Group by store
-  const storeGroups = new Map<string, Product[]>();
-  products.forEach((p) => {
-    if (p.product_url) {
-      if (!storeGroups.has(p.store)) storeGroups.set(p.store, []);
-      storeGroups.get(p.store)!.push(p);
-    }
-  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -345,8 +322,12 @@ export default function SharedBoxPage() {
                   <button
                     key={section.id}
                     onClick={() => setActiveTab(section.event_type)}
-                    className="pill-tab"
-                    data-active={isActive}
+                    className={`pill-tab ${
+                      isActive
+                        ? "bg-white text-foreground shadow-sm"
+                        : ""
+                    }`}
+                    data-active={isActive ? "true" : undefined}
                   >
                     {EVENT_ICONS[section.event_type]}
                     {etConfig?.label || section.event_type}
@@ -361,93 +342,121 @@ export default function SharedBoxPage() {
         </div>
       )}
 
-      {/* Products */}
-      <div key={activeTab} className="max-w-5xl mx-auto px-5 py-8">
-        {activeSection?.description && (
-          <p className="text-muted-foreground text-sm mb-8 text-center max-w-lg mx-auto leading-relaxed">
-            {activeSection.description}
-          </p>
-        )}
+      {/* Products — keyed on activeTab + section id to force full re-mount */}
+      {sortedSections.map((section) => {
+        if (section.event_type !== activeTab) return null;
 
-        {categories.size === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-              <Package className="w-8 h-8 text-muted-foreground/40" />
-            </div>
-            <p className="text-muted-foreground text-sm">
-              No products in this section yet.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-10">
-            {Array.from(categories.entries()).map(
-              ([category, categoryProducts], index) => (
-                <section
-                  key={category}
-                  className="animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  {/* Category Header */}
-                  <div className="section-divider mb-5">
-                    <h2 className="font-display text-lg font-semibold text-foreground whitespace-nowrap px-3">
-                      {category}
-                    </h2>
-                  </div>
+        const sectionProducts = section.products || [];
+        const sectionCategories = new Map<string, Product[]>();
+        [...sectionProducts]
+          .sort((a, b) => a.sort_order - b.sort_order)
+          .forEach((p) => {
+            const cat = p.category || "Other";
+            if (!sectionCategories.has(cat)) sectionCategories.set(cat, []);
+            sectionCategories.get(cat)!.push(p);
+          });
 
-                  {/* Horizontal Swipe Carousel */}
-                  <ProductCarousel products={categoryProducts} />
-                </section>
-              )
+        const sectionStoreGroups = new Map<string, Product[]>();
+        sectionProducts.forEach((p) => {
+          if (p.product_url) {
+            if (!sectionStoreGroups.has(p.store))
+              sectionStoreGroups.set(p.store, []);
+            sectionStoreGroups.get(p.store)!.push(p);
+          }
+        });
+
+        return (
+          <div key={section.id} className="max-w-5xl mx-auto px-5 py-8">
+            {section.description && (
+              <p className="text-muted-foreground text-sm mb-8 text-center max-w-lg mx-auto leading-relaxed">
+                {section.description}
+              </p>
             )}
 
-            {/* Shop All by Store */}
-            {storeGroups.size > 0 && (
-              <div className="mt-12 pt-10 border-t border-border/60">
-                <div className="section-divider mb-6">
-                  <h2 className="font-display text-lg font-semibold text-foreground whitespace-nowrap px-3">
-                    Quick Shop by Store
-                  </h2>
+            {sectionCategories.size === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+                  <Package className="w-8 h-8 text-muted-foreground/40" />
                 </div>
-                <div className="carousel-scroll px-1">
-                  {Array.from(storeGroups.entries()).map(
-                    ([storeName, storeProducts]) => {
-                      const store = getStoreConfig(storeName);
-                      return (
-                        <div key={storeName} className="w-[200px] flex-shrink-0">
-                          <div className="card p-5 text-center h-full">
-                            <span
-                              className={`inline-block text-xs px-3 py-1 rounded-full font-semibold mb-3 ${store.bg} ${store.text}`}
+                <p className="text-muted-foreground text-sm">
+                  No products in this section yet.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-10">
+                {Array.from(sectionCategories.entries()).map(
+                  ([category, categoryProducts], index) => (
+                    <section
+                      key={category}
+                      className="animate-fade-in-up"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      {/* Category Header */}
+                      <div className="section-divider mb-5">
+                        <h2 className="font-display text-lg font-semibold text-foreground whitespace-nowrap px-3">
+                          {category}
+                        </h2>
+                      </div>
+
+                      {/* Horizontal Swipe Carousel */}
+                      <ProductCarousel products={categoryProducts} />
+                    </section>
+                  )
+                )}
+
+                {/* Shop All by Store */}
+                {sectionStoreGroups.size > 0 && (
+                  <div className="mt-12 pt-10 border-t border-border/60">
+                    <div className="section-divider mb-6">
+                      <h2 className="font-display text-lg font-semibold text-foreground whitespace-nowrap px-3">
+                        Quick Shop by Store
+                      </h2>
+                    </div>
+                    <div className="carousel-scroll px-1">
+                      {Array.from(sectionStoreGroups.entries()).map(
+                        ([storeName, storeProducts]) => {
+                          const store = getStoreConfig(storeName);
+                          return (
+                            <div
+                              key={storeName}
+                              className="w-[200px] flex-shrink-0"
                             >
-                              {storeName}
-                            </span>
-                            <p className="text-sm text-muted-foreground mb-4">
-                              {storeProducts.length} product
-                              {storeProducts.length !== 1 ? "s" : ""}
-                            </p>
-                            <div className="space-y-1.5">
-                              {storeProducts.map((p) => (
-                                <a
-                                  key={p.id}
-                                  href={p.product_url!}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="block text-xs text-primary hover:underline truncate leading-relaxed"
+                              <div className="card p-5 text-center h-full">
+                                <span
+                                  className={`inline-block text-xs px-3 py-1 rounded-full font-semibold mb-3 ${store.bg} ${store.text}`}
                                 >
-                                  {p.name}
-                                </a>
-                              ))}
+                                  {storeName}
+                                </span>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                  {storeProducts.length} product
+                                  {storeProducts.length !== 1 ? "s" : ""}
+                                </p>
+                                <div className="space-y-1.5">
+                                  {storeProducts.map((p) => (
+                                    <a
+                                      key={p.id}
+                                      href={p.product_url!}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="block text-xs text-primary hover:underline truncate leading-relaxed"
+                                    >
+                                      {p.name}
+                                    </a>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      );
-                    }
-                  )}
-                </div>
+                          );
+                        }
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
-      </div>
+        );
+      })}
 
       {/* Footer */}
       <footer className="border-t border-border/60 py-8 mt-8">
