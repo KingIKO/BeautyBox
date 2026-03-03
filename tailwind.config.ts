@@ -63,11 +63,30 @@ const config: Config = {
           from: { opacity: "0", transform: "scale(0.95)" },
           to: { opacity: "1", transform: "scale(1)" },
         },
+        "background-gradient": {
+          "0%, 100%": {
+            transform: "translate(var(--tx-1, 0), var(--ty-1, 0))",
+            opacity: "var(--opacity-1, 0.7)",
+          },
+          "25%": {
+            transform: "translate(var(--tx-2, 20%), var(--ty-2, -20%))",
+            opacity: "var(--opacity-2, 0.5)",
+          },
+          "50%": {
+            transform: "translate(var(--tx-3, -15%), var(--ty-3, 15%))",
+            opacity: "var(--opacity-3, 0.8)",
+          },
+          "75%": {
+            transform: "translate(var(--tx-4, 10%), var(--ty-4, 25%))",
+            opacity: "var(--opacity-4, 0.6)",
+          },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.2s ease-out",
         "slide-up": "slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
         "scale-in": "scale-in 0.2s ease-out",
+        "background-gradient": "background-gradient var(--duration, 15s) ease infinite",
       },
       boxShadow: {
         "soft": "0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(0, 0, 0, 0.06)",

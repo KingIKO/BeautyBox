@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { AnimatedGradient } from "@/components/ui/animated-gradient-with-svg";
 
 interface BoxHeroProps {
   title: string;
@@ -26,10 +27,7 @@ export default function BoxHero({
           className="object-cover"
         />
       ) : (
-        <div
-          className="absolute inset-0 animate-gradient bg-gradient-to-br from-pink-100 via-rose-100 to-amber-50"
-          aria-hidden="true"
-        />
+        <AnimatedGradient colors={["#fb7185", "#f9a8d4", "#fcd34d"]} speed={0.05} blur="medium" />
       )}
 
       {/* Gradient overlay */}

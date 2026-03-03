@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { Sparkles, LogIn } from "lucide-react";
 import { AdvancedButton } from "@/components/ui/gradient-button";
+import { AnimatedGradient } from "@/components/ui/animated-gradient-with-svg";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -40,8 +41,7 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-5 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-20 -left-32 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 -right-32 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
+      <AnimatedGradient colors={["#fda4af", "#fbcfe8", "#fde68a"]} speed={0.05} blur="heavy" />
 
       <div className="relative w-full max-w-sm">
         {/* Logo */}

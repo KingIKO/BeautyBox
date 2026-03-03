@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, Gift, ShoppingBag, Heart, ArrowRight, Star } from "lucide-react";
 import { AdvancedButton } from "@/components/ui/gradient-button";
+import { AnimatedGradient } from "@/components/ui/animated-gradient-with-svg";
 
 export default function HomePage() {
   const router = useRouter();
@@ -33,12 +34,8 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         {/* Animated gradient background */}
-        <div className="absolute inset-0 animate-gradient bg-gradient-to-br from-rose-100 via-pink-50 via-50% to-amber-50" />
+        <AnimatedGradient colors={["#f43f5e", "#ec4899", "#f59e0b"]} speed={0.05} blur="medium" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-
-        {/* Decorative blobs */}
-        <div className="absolute top-20 -left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse-soft" />
-        <div className="absolute bottom-10 -right-20 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: "1s" }} />
 
         <div className="relative max-w-4xl mx-auto px-5 py-28 md:py-40 text-center">
           {/* Badge */}
