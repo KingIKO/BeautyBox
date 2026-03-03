@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { getAdminBoxes, deleteBox } from "@/lib/api";
 import type { Box } from "@/types";
@@ -16,8 +17,10 @@ import {
   Copy,
   ExternalLink,
 } from "lucide-react";
+import { AdvancedButton } from "@/components/ui/gradient-button";
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
   const { user, loading: authLoading, signOut } = useAuth();
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,10 +102,15 @@ export default function AdminDashboardPage() {
               Create and manage beauty recommendation boxes
             </p>
           </div>
-          <Link href="/admin/boxes/new" className="btn-primary flex-shrink-0">
+          <AdvancedButton
+            onClick={() => router.push("/admin/boxes/new")}
+            variant="primary"
+            size="medium"
+            className="flex-shrink-0"
+          >
             <Plus className="w-4 h-4" />
             New Box
-          </Link>
+          </AdvancedButton>
         </div>
 
         {error && (

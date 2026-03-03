@@ -1,7 +1,12 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, Gift, ShoppingBag, Heart, ArrowRight, Star } from "lucide-react";
+import { AdvancedButton } from "@/components/ui/gradient-button";
 
 export default function HomePage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-background">
       {/* Glass Nav */}
@@ -53,11 +58,16 @@ export default function HomePage() {
           </p>
 
           <div className="animate-slide-up stagger-3 flex flex-col sm:flex-row gap-4 justify-center" style={{ animationFillMode: "backwards" }}>
-            <Link href="/admin" className="btn-primary text-base px-8 py-3.5 rounded-2xl">
+            <AdvancedButton
+              onClick={() => router.push("/admin")}
+              variant="gradient"
+              size="large"
+              className="rounded-2xl"
+            >
               <Gift className="w-5 h-5" />
               Create a Box
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </AdvancedButton>
           </div>
         </div>
       </section>

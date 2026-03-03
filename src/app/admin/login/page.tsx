@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { Sparkles, LogIn } from "lucide-react";
+import { AdvancedButton } from "@/components/ui/gradient-button";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -94,10 +95,12 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          <button
+          <AdvancedButton
             type="submit"
             disabled={loading}
-            className="btn-primary w-full py-3"
+            variant="primary"
+            size="medium"
+            className="w-full"
           >
             {loading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
@@ -107,7 +110,7 @@ export default function AdminLoginPage() {
                 Sign In
               </>
             )}
-          </button>
+          </AdvancedButton>
         </form>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBox } from "@/lib/api";
 import { Sparkles, LogOut, ArrowLeft, Plus } from "lucide-react";
+import { AdvancedButton } from "@/components/ui/gradient-button";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
 
@@ -110,7 +111,12 @@ export default function NewBoxPage() {
           </div>
 
           <div className="flex gap-3 pt-3 border-t border-border/40">
-            <button type="submit" disabled={loading || !title.trim()} className="btn-primary">
+            <AdvancedButton
+              type="submit"
+              disabled={loading || !title.trim()}
+              variant="primary"
+              size="medium"
+            >
               {loading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
               ) : (
@@ -119,7 +125,7 @@ export default function NewBoxPage() {
                   Create Box
                 </>
               )}
-            </button>
+            </AdvancedButton>
             <Link href="/admin" className="btn-secondary">
               Cancel
             </Link>
