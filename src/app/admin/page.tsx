@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { getAdminBoxes, deleteBox } from "@/lib/api";
+import { getAdminBoxes, deleteBox, cloneBox } from "@/lib/api";
 import type { Box } from "@/types";
 import Link from "next/link";
 import {
@@ -15,6 +15,7 @@ import {
   Trash2,
   Edit,
   Copy,
+  CopyPlus,
   ExternalLink,
   LayoutGrid,
   CheckCircle2,
@@ -39,6 +40,7 @@ export default function AdminDashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [cloning, setCloning] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -65,6 +67,18 @@ export default function AdminDashboardPage() {
     navigator.clipboard.writeText(url);
     setCopied(slug);
     setTimeout(() => setCopied(null), 2000);
+  };
+
+  const handleClone = async (id: string) => {
+    setCloning(id);
+    try {
+      const newBox = await cloneBox(id);
+      setBoxes((prev) => [newBox, ...prev]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Clone failed");
+    } finally {
+      setCloning(null);
+    }
   };
 
   const publishedCount = boxes.filter((b) => b.is_published).length;
@@ -284,6 +298,14 @@ export default function AdminDashboardPage() {
                     >
                       <Copy className="w-3.5 h-3.5" />
                       {copied === box.slug ? "Copied!" : "Copy Link"}
+                    </button>
+                    <button
+                      onClick={() => handleClone(box.id)}
+                      disabled={cloning === box.id}
+                      className="btn-secondary text-xs px-3.5 py-2"
+                    >
+                      <CopyPlus className="w-3.5 h-3.5" />
+                      {cloning === box.id ? "Cloning..." : "Clone"}
                     </button>
                     {box.is_published && (
                       <Link

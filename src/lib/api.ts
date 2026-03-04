@@ -53,6 +53,9 @@ export const updateBox = (id: string, data: Partial<Box>) =>
 export const deleteBox = (id: string) =>
   apiFetch<void>(`/api/admin/boxes/${id}`, { method: "DELETE" });
 
+export const cloneBox = (id: string) =>
+  apiFetch<Box>(`/api/admin/boxes/${id}/clone`, { method: "POST" });
+
 // --- Admin: Sections ---
 export const addSection = (
   boxId: string,
